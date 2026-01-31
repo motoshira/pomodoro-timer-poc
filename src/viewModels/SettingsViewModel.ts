@@ -67,20 +67,10 @@ export class SettingsViewModel {
   }
 
   validateWorkDuration(value: number): boolean {
-    try {
-      TimerSettingsSchema.shape.workDuration.parse(value);
-      return true;
-    } catch {
-      return false;
-    }
+    return TimerSettingsSchema.shape.workDuration.safeParse(value).success;
   }
 
   validateRestDuration(value: number): boolean {
-    try {
-      TimerSettingsSchema.shape.restDuration.parse(value);
-      return true;
-    } catch {
-      return false;
-    }
+    return TimerSettingsSchema.shape.restDuration.safeParse(value).success;
   }
 }
