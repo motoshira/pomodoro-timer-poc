@@ -28,13 +28,20 @@ jobs:
             libgjs-dev \
             gir1.2-gtk-4.0 \
             libgtk-4-dev \
-            libgirepository1.0-dev
+            libgirepository1.0-dev \
+            meson \
+            ninja-build
+
+      - name: Build and install jasmine-gjs
+        run: |
+          git clone https://github.com/ptomato/jasmine-gjs.git /tmp/jasmine-gjs
+          cd /tmp/jasmine-gjs
+          meson _build
+          ninja -C _build
+          sudo ninja -C _build install
 
       - name: Install npm dependencies
         run: npm ci
-
-      - name: Install Jasmine-GJS globally
-        run: npm install -g jasmine-gjs
 
       - name: Run linter
         run: npm run lint
