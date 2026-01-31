@@ -22,3 +22,70 @@ export const createInitialModel = (workDurationMinutes: number): TimerModel => {
     totalSeconds: workDurationMinutes * 60,
   });
 };
+
+export const start = (
+  timerModel: TimerModel,
+): {
+  result: TimerModel;
+  hasChanged: boolean;
+} => {
+  if (timerModel.state === 'RUNNING') {
+    return {
+      result: timerModel,
+      hasChanged: false,
+    };
+  }
+  const result = {
+    ...timerModel,
+    state: 'RUNNING',
+  } as TimerModel;
+  return {
+    result: result,
+    hasChanged: true,
+  };
+};
+
+// todo
+export const stop = (
+  timerModel: TimerModel,
+): {
+  result: TimerModel;
+  hasChanged: boolean;
+} => {
+  if (timerModel.state === 'STOPPED') {
+    return {
+      result: timerModel,
+      hasChanged: false,
+    };
+  }
+  const result = {
+    ...timerModel,
+    state: 'STOPPED',
+  } as TimerModel;
+  return {
+    result: result,
+    hasChanged: true,
+  };
+};
+
+// todo
+export const reset = (timerModel: TimerModel): TimerModel => {
+  return timerModel;
+};
+
+// todo
+// decrement remaining seconds needed (when zero do nothingx)
+// `transitionToNextMode` should be handled outside of this function
+export const tick = (timerModel: TimerModel): TimerModel => {
+  return timerModel;
+};
+
+// todo
+export const resetToCurrentMode = (timerModel: TimerModel): TimerModel => {
+  return timerModel;
+};
+
+// todo
+export const transitionToNextMode = (timerModel: TimerModel): TimerModel => {
+  return timerModel;
+};
