@@ -1,4 +1,6 @@
+import type { TimerMode } from '../../src/models/TimerMode';
 import { TimerSettingsSchema } from '../../src/models/TimerSettings';
+import type { TimerState } from '../../src/models/TimerState';
 import { createTimerViewModel, type TimerViewModel } from '../../src/viewModels/TimerViewModel';
 import { FakeTimerService } from '../services/FakeTimerService';
 import { MockSettingsStorage } from '../services/MockSettingsStorage';
@@ -58,16 +60,19 @@ describe('TimerViewModel', () => {
 
       it('Should format "01:30" for 90 seconds', () => {
         // Manually set remainingSeconds to 90
+        // biome-ignore lint/suspicious/noExplicitAny: test helper to access private member
         (viewModel as any)._remainingSeconds = 90;
         expect(viewModel.displayTime).toBe('01:30');
       });
 
       it('Should format "00:00" for 0 seconds', () => {
+        // biome-ignore lint/suspicious/noExplicitAny: test helper to access private member
         (viewModel as any)._remainingSeconds = 0;
         expect(viewModel.displayTime).toBe('00:00');
       });
 
       it('Should pad single digits with zeros', () => {
+        // biome-ignore lint/suspicious/noExplicitAny: test helper to access private member
         (viewModel as any)._remainingSeconds = 65; // 1 minute, 5 seconds
         expect(viewModel.displayTime).toBe('01:05');
       });
@@ -79,6 +84,7 @@ describe('TimerViewModel', () => {
       });
 
       it('Should return "Rest" for REST mode', () => {
+        // biome-ignore lint/suspicious/noExplicitAny: test helper to access private member
         (viewModel as any)._currentMode = 'REST';
         expect(viewModel.modeLabel).toBe('Rest');
       });
@@ -90,6 +96,7 @@ describe('TimerViewModel', () => {
       });
 
       it('Should return rest icon for REST mode', () => {
+        // biome-ignore lint/suspicious/noExplicitAny: test helper to access private member
         (viewModel as any)._currentMode = 'REST';
         expect(viewModel.modeIcon).toBe('preferences-desktop-screensaver-symbolic');
       });
@@ -101,6 +108,7 @@ describe('TimerViewModel', () => {
       });
 
       it('Should return "Stop" for RUNNING state', () => {
+        // biome-ignore lint/suspicious/noExplicitAny: test helper to access private member
         (viewModel as any)._state = 'RUNNING';
         expect(viewModel.startStopLabel).toBe('Stop');
       });
@@ -194,6 +202,7 @@ describe('TimerViewModel', () => {
 
     it('Should return false when reaching 0', () => {
       // Set to 1 second remaining
+      // biome-ignore lint/suspicious/noExplicitAny: test helper to access private member
       (viewModel as any)._remainingSeconds = 1;
       viewModel.start();
 
@@ -205,9 +214,11 @@ describe('TimerViewModel', () => {
     });
 
     it('Should call _transitionToNextMode() when reaching 0', () => {
+      // biome-ignore lint/suspicious/noExplicitAny: test helper to access private member
       const transitionSpy = spyOn(viewModel as any, '_transitionToNextMode');
 
       // Set to 1 second remaining
+      // biome-ignore lint/suspicious/noExplicitAny: test helper to access private member
       (viewModel as any)._remainingSeconds = 1;
       viewModel.start();
 
@@ -236,6 +247,7 @@ describe('TimerViewModel', () => {
         expect(viewModel.currentMode).toBe('WORK');
 
         // Trigger transition
+        // biome-ignore lint/suspicious/noExplicitAny: test helper to access private member
         (viewModel as any)._transitionToNextMode();
 
         expect(viewModel.currentMode).toBe('REST');
@@ -243,9 +255,11 @@ describe('TimerViewModel', () => {
 
       it('Should transition from REST to WORK', () => {
         // Set to REST mode first
+        // biome-ignore lint/suspicious/noExplicitAny: test helper to access private member
         (viewModel as any)._currentMode = 'REST';
 
         // Trigger transition
+        // biome-ignore lint/suspicious/noExplicitAny: test helper to access private member
         (viewModel as any)._transitionToNextMode();
 
         expect(viewModel.currentMode).toBe('WORK');
@@ -256,6 +270,7 @@ describe('TimerViewModel', () => {
         expect(viewModel.state).toBe('RUNNING');
 
         // Trigger transition
+        // biome-ignore lint/suspicious/noExplicitAny: test helper to access private member
         (viewModel as any)._transitionToNextMode();
 
         expect(viewModel.state).toBe('STOPPED');
@@ -266,6 +281,7 @@ describe('TimerViewModel', () => {
         const expectedRestSeconds = settings.restDuration * 60;
 
         // Trigger transition from WORK to REST
+        // biome-ignore lint/suspicious/noExplicitAny: test helper to access private member
         (viewModel as any)._transitionToNextMode();
 
         expect(viewModel.remainingSeconds).toBe(expectedRestSeconds);
@@ -276,9 +292,11 @@ describe('TimerViewModel', () => {
         const expectedWorkSeconds = settings.workDuration * 60;
 
         // Set to REST mode first
+        // biome-ignore lint/suspicious/noExplicitAny: test helper to access private member
         (viewModel as any)._currentMode = 'REST';
 
         // Trigger transition from REST to WORK
+        // biome-ignore lint/suspicious/noExplicitAny: test helper to access private member
         (viewModel as any)._transitionToNextMode();
 
         expect(viewModel.remainingSeconds).toBe(expectedWorkSeconds);
@@ -456,6 +474,7 @@ describe('TimerViewModel', () => {
 
     it('Should apply new settings after running timer completes cycle', () => {
       // Set to 1 second remaining and start
+      // biome-ignore lint/suspicious/noExplicitAny: test helper to access private member
       (viewModel as any)._remainingSeconds = 1;
       viewModel.start();
 
@@ -475,7 +494,9 @@ describe('TimerViewModel', () => {
     describe('Full Cycles', () => {
       it('Full work cycle: start → tick to 0 → auto transition to REST', () => {
         // Set to 3 seconds for quick test
+        // biome-ignore lint/suspicious/noExplicitAny: test helper to access private member
         (viewModel as any)._remainingSeconds = 3;
+        // biome-ignore lint/suspicious/noExplicitAny: test helper to access private member
         (viewModel as any)._totalSeconds = 3;
 
         viewModel.start();
@@ -501,7 +522,9 @@ describe('TimerViewModel', () => {
         expect(viewModel.currentMode).toBe('REST');
 
         // Set to 3 seconds for quick test
+        // biome-ignore lint/suspicious/noExplicitAny: test helper to access private member
         (viewModel as any)._remainingSeconds = 3;
+        // biome-ignore lint/suspicious/noExplicitAny: test helper to access private member
         (viewModel as any)._totalSeconds = 3;
 
         viewModel.start();
@@ -569,7 +592,9 @@ describe('TimerViewModel', () => {
     describe('Settings During Running Timer', () => {
       it('Settings change during run should apply after transition', () => {
         // Set to 2 seconds for quick test
+        // biome-ignore lint/suspicious/noExplicitAny: test helper to access private member
         (viewModel as any)._remainingSeconds = 2;
+        // biome-ignore lint/suspicious/noExplicitAny: test helper to access private member
         (viewModel as any)._totalSeconds = 2;
 
         viewModel.start();
@@ -623,7 +648,9 @@ describe('TimerViewModel', () => {
       it('Multiple complete cycles', () => {
         for (let cycle = 0; cycle < 3; cycle++) {
           // Set short duration for testing
+          // biome-ignore lint/suspicious/noExplicitAny: test helper to access private member
           (viewModel as any)._remainingSeconds = 2;
+          // biome-ignore lint/suspicious/noExplicitAny: test helper to access private member
           (viewModel as any)._totalSeconds = 2;
 
           viewModel.start();

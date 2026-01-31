@@ -1,3 +1,4 @@
+import type { TimerSettings } from '../../src/models/TimerSettings';
 import { TimerSettingsSchema } from '../../src/models/TimerSettings';
 import { MockSettingsStorage } from './MockSettingsStorage';
 
@@ -49,19 +50,19 @@ describe('MockSettingsStorage', () => {
     it('Should validate settings before saving', () => {
       const invalidSettings = { workDuration: -1, restDuration: 5 };
 
-      expect(() => storage.save(invalidSettings as any)).toThrow();
+      expect(() => storage.save(invalidSettings as unknown as TimerSettings)).toThrow();
     });
 
     it('Should reject zero workDuration', () => {
       const invalidSettings = { workDuration: 0, restDuration: 5 };
 
-      expect(() => storage.save(invalidSettings as any)).toThrow();
+      expect(() => storage.save(invalidSettings as unknown as TimerSettings)).toThrow();
     });
 
     it('Should reject non-integer restDuration', () => {
       const invalidSettings = { workDuration: 25, restDuration: 5.5 };
 
-      expect(() => storage.save(invalidSettings as any)).toThrow();
+      expect(() => storage.save(invalidSettings as unknown as TimerSettings)).toThrow();
     });
   });
 
