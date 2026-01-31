@@ -1,6 +1,8 @@
 import GObject from 'gi://GObject';
 import Gtk from 'gi://Gtk';
 import type { TimerViewModel } from '../viewModels/TimerViewModel';
+import { createSettingsViewModel } from '../viewModels/SettingsViewModel';
+import { SettingsDialog } from './SettingsDialog';
 
 export const MainWindow = GObject.registerClass(
   {
@@ -88,8 +90,31 @@ export const MainWindow = GObject.registerClass(
     }
 
     private _onSettingsClicked(): void {
-      // TODO: Open SettingsDialog (will be implemented in 5.5)
-      console.log('Settings button clicked');
+      if (!this._viewModel) return;
+
+      // Create SettingsViewModel and Dialog
+      const settingsViewModel = createSettingsViewModel();
+      const dialog = new SettingsDialog({ transient_for: this, modal: true });
+
+      // Bind ViewModel to Dialog
+      dialog.bindViewModel(settingsViewModel);
+
+      // Load current settings from TimerViewModel
+      dialog.loadSettings(this._viewModel.settings);
+
+      // Show dialog and handle response
+      dialog.connect('response', (_dialog, response) => {
+        if (response === Gtk.ResponseType.OK) {
+          const savedSettings = dialog.getSavedSettings();
+          if (savedSettings) {
+            // Update TimerViewModel with new settings
+            this._viewModel?.updateSettings(savedSettings);
+          }
+        }
+        dialog.close();
+      });
+
+      dialog.show();
     }
   },
 );
