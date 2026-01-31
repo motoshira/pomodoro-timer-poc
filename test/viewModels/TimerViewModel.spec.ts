@@ -1,5 +1,5 @@
 import { TimerSettingsSchema } from '../../src/models/TimerSettings';
-import { type TimerViewModel, createTimerViewModel } from '../../src/viewModels/TimerViewModel';
+import { createTimerViewModel, type TimerViewModel } from '../../src/viewModels/TimerViewModel';
 import { FakeTimerService } from '../services/FakeTimerService';
 import { MockSettingsStorage } from '../services/MockSettingsStorage';
 
