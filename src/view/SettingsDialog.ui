@@ -2,11 +2,10 @@
 <interface>
   <template class="PomodoroSettingsDialog" parent="GtkDialog">
     <property name="title">Settings</property>
-    <property name="modal">true</property>
+    <property name="modal">1</property>
     <property name="default-width">300</property>
     <property name="default-height">200</property>
-
-    <child type="content">
+    <child>
       <object class="GtkBox">
         <property name="orientation">vertical</property>
         <property name="spacing">12</property>
@@ -14,21 +13,16 @@
         <property name="margin-bottom">12</property>
         <property name="margin-start">12</property>
         <property name="margin-end">12</property>
-
-        <!-- Work Duration -->
         <child>
           <object class="GtkBox">
-            <property name="orientation">horizontal</property>
             <property name="spacing">8</property>
-
             <child>
               <object class="GtkLabel">
                 <property name="label">Work Duration (minutes):</property>
-                <property name="hexpand">true</property>
+                <property name="hexpand">1</property>
                 <property name="halign">start</property>
               </object>
             </child>
-
             <child>
               <object class="GtkSpinButton" id="workDurationInput">
                 <property name="adjustment">
@@ -44,21 +38,16 @@
             </child>
           </object>
         </child>
-
-        <!-- Rest Duration -->
         <child>
           <object class="GtkBox">
-            <property name="orientation">horizontal</property>
             <property name="spacing">8</property>
-
             <child>
               <object class="GtkLabel">
                 <property name="label">Rest Duration (minutes):</property>
-                <property name="hexpand">true</property>
+                <property name="hexpand">1</property>
                 <property name="halign">start</property>
               </object>
             </child>
-
             <child>
               <object class="GtkSpinButton" id="restDurationInput">
                 <property name="adjustment">
@@ -76,8 +65,6 @@
         </child>
       </object>
     </child>
-
-    <!-- Dialog Buttons -->
     <child type="action">
       <object class="GtkButton" id="cancelButton">
         <property name="label">Cancel</property>

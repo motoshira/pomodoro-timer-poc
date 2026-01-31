@@ -12,25 +12,19 @@
         <property name="margin-bottom">24</property>
         <property name="margin-start">24</property>
         <property name="margin-end">24</property>
-
-        <!-- Timer Display Area -->
         <child>
           <object class="GtkBox" id="displayArea">
             <property name="orientation">vertical</property>
             <property name="spacing">8</property>
             <property name="halign">center</property>
             <property name="valign">center</property>
-            <property name="vexpand">true</property>
-
-            <!-- Mode Icon -->
+            <property name="vexpand">1</property>
             <child>
               <object class="GtkImage" id="modeIcon">
                 <property name="icon-name">preferences-system-time-symbolic</property>
                 <property name="pixel-size">64</property>
               </object>
             </child>
-
-            <!-- Time Label -->
             <child>
               <object class="GtkLabel" id="timeLabel">
                 <property name="label">25:00</property>
@@ -39,8 +33,6 @@
                 </style>
               </object>
             </child>
-
-            <!-- Mode Label -->
             <child>
               <object class="GtkLabel" id="modeLabel">
                 <property name="label">Work</property>
@@ -51,16 +43,11 @@
             </child>
           </object>
         </child>
-
-        <!-- Control Buttons -->
         <child>
           <object class="GtkBox" id="controlArea">
-            <property name="orientation">horizontal</property>
             <property name="spacing">8</property>
             <property name="halign">center</property>
-            <property name="homogeneous">true</property>
-
-            <!-- Start/Stop Button -->
+            <property name="homogeneous">1</property>
             <child>
               <object class="GtkButton" id="startStopButton">
                 <property name="label">Start</property>
@@ -69,15 +56,11 @@
                 </style>
               </object>
             </child>
-
-            <!-- Skip Button -->
             <child>
               <object class="GtkButton" id="skipButton">
                 <property name="label">Skip</property>
               </object>
             </child>
-
-            <!-- Reset Button -->
             <child>
               <object class="GtkButton" id="resetButton">
                 <property name="label">Reset</property>
@@ -85,8 +68,6 @@
             </child>
           </object>
         </child>
-
-        <!-- Settings Button -->
         <child>
           <object class="GtkButton" id="settingsButton">
             <property name="label">Settings</property>
