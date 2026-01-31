@@ -1508,23 +1508,24 @@ Refer to `docs/testing-strategy.md` for the complete manual testing checklist.
 **SettingsDialog Testing:**
 - [x] Dialog opens with current settings
 - [x] Input validation works (SpinButton constraints)
-- [ ] Save applies changes correctly
-- [ ] Cancel discards changes
-- [ ] hasChanges detection works
+- [x] Save applies changes correctly
+- [x] Cancel discards changes
+- [x] hasChanges detection works
 - [ ] Settings persist across app restarts (when GSettings implemented)
 
 ### 6.2 Bug Fixes
 
-- [ ] **6.2.1** Document any bugs found during manual testing
+- [x] **6.2.1** Document any bugs found during manual testing
 
-- [ ] **6.2.2** Fix bugs one at a time
+- [x] **6.2.2** Fix bugs one at a time
   - Write a failing test that reproduces the bug (if possible)
   - Fix the implementation
   - Verify test passes
   - Commit with descriptive message referencing the bug
 
   - SettingsDialog
-    - [ ] Save/Cancel buttons does not appear
+    - [x] Save/Cancel buttons does not appear (Fixed: GTK4 doesn't support `<child type="action">`, moved buttons to content area)
+    - [x] Settings not saved when Save button clicked (Fixed: Set `_savedSettings` before calling `response()`)
 
 - [ ] **6.2.3** Re-run all tests after fixes
   ```bash
