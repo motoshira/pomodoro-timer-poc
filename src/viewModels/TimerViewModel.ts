@@ -1,4 +1,3 @@
-import GLib from 'gi://GLib';
 import GObject from 'gi://GObject';
 import type { TimerMode } from '../models/TimerMode';
 import type { TimerSettings } from '../models/TimerSettings';
@@ -235,17 +234,6 @@ const TimerViewModelClass = GObject.registerClass(
         this.notify('remaining-seconds');
         this.notify('display-time');
       }
-    }
-
-    vfunc_dispose(): void {
-      // Clean up timer if running
-      // Use GLib.Source.remove directly to avoid JS callback during GC
-      if (this._timerId !== null) {
-        GLib.Source.remove(this._timerId);
-        this._timerId = null;
-      }
-
-      super.vfunc_dispose();
     }
   },
 );
