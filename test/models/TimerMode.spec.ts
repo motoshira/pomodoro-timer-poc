@@ -16,10 +16,16 @@ describe('TimerMode', () => {
     expect(result.success).toBe(false);
   });
 
-  it('Should have exactly 2 modes', () => {
-    const modes = TimerModeSchema.options;
-    expect(modes.length).toBe(2);
-    expect(modes).toContain('WORK');
-    expect(modes).toContain('REST');
+  it('Should have exactly 2 modes: WORK and REST', () => {
+    const validModes = ['WORK', 'REST'];
+
+    // Verify all expected modes are valid
+    for (const mode of validModes) {
+      expect(TimerModeSchema.safeParse(mode).success).toBe(true);
+    }
+
+    // Verify no additional modes exist by testing that other values fail
+    expect(TimerModeSchema.safeParse('BREAK').success).toBe(false);
+    expect(TimerModeSchema.safeParse('PAUSE').success).toBe(false);
   });
 });

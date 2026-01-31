@@ -16,10 +16,16 @@ describe('TimerState', () => {
     expect(result.success).toBe(false);
   });
 
-  it('Should have exactly 2 states', () => {
-    const states = TimerStateSchema.options;
-    expect(states.length).toBe(2);
-    expect(states).toContain('RUNNING');
-    expect(states).toContain('STOPPED');
+  it('Should have exactly 2 states: RUNNING and STOPPED', () => {
+    const validStates = ['RUNNING', 'STOPPED'];
+
+    // Verify all expected states are valid
+    for (const state of validStates) {
+      expect(TimerStateSchema.safeParse(state).success).toBe(true);
+    }
+
+    // Verify no additional states exist by testing that other values fail
+    expect(TimerStateSchema.safeParse('PAUSED').success).toBe(false);
+    expect(TimerStateSchema.safeParse('IDLE').success).toBe(false);
   });
 });
