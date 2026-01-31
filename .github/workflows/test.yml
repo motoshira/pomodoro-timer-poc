@@ -33,8 +33,8 @@ jobs:
       - name: Install npm dependencies
         run: npm ci
 
-      - name: Install Jasmine globally
-        run: npm install -g jasmine
+      - name: Install Jasmine-GJS globally
+        run: npm install -g jasmine-gjs
 
       - name: Run linter
         run: npm run lint
