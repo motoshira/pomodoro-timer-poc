@@ -1,16 +1,25 @@
-import { TimerState } from '../../src/models/TimerState';
+import { TimerStateSchema } from '../../src/models/TimerState';
 
 describe('TimerState', () => {
-  it('Should define RUNNING state constant', () => {
-    expect(TimerState.RUNNING).toBe('RUNNING');
+  it('Should accept RUNNING state', () => {
+    const result = TimerStateSchema.safeParse('RUNNING');
+    expect(result.success).toBe(true);
   });
 
-  it('Should define STOPPED state constant', () => {
-    expect(TimerState.STOPPED).toBe('STOPPED');
+  it('Should accept STOPPED state', () => {
+    const result = TimerStateSchema.safeParse('STOPPED');
+    expect(result.success).toBe(true);
+  });
+
+  it('Should reject invalid state', () => {
+    const result = TimerStateSchema.safeParse('INVALID');
+    expect(result.success).toBe(false);
   });
 
   it('Should have exactly 2 states', () => {
-    const states = Object.values(TimerState);
+    const states = TimerStateSchema.options;
     expect(states.length).toBe(2);
+    expect(states).toContain('RUNNING');
+    expect(states).toContain('STOPPED');
   });
 });

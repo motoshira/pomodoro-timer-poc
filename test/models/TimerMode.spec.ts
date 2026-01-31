@@ -1,16 +1,25 @@
-import { TimerMode } from '../../src/models/TimerMode';
+import { TimerModeSchema } from '../../src/models/TimerMode';
 
 describe('TimerMode', () => {
-  it('Should define WORK mode constant', () => {
-    expect(TimerMode.WORK).toBe('WORK');
+  it('Should accept WORK mode', () => {
+    const result = TimerModeSchema.safeParse('WORK');
+    expect(result.success).toBe(true);
   });
 
-  it('Should define REST mode constant', () => {
-    expect(TimerMode.REST).toBe('REST');
+  it('Should accept REST mode', () => {
+    const result = TimerModeSchema.safeParse('REST');
+    expect(result.success).toBe(true);
+  });
+
+  it('Should reject invalid mode', () => {
+    const result = TimerModeSchema.safeParse('INVALID');
+    expect(result.success).toBe(false);
   });
 
   it('Should have exactly 2 modes', () => {
-    const modes = Object.values(TimerMode);
+    const modes = TimerModeSchema.options;
     expect(modes.length).toBe(2);
+    expect(modes).toContain('WORK');
+    expect(modes).toContain('REST');
   });
 });

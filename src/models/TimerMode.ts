@@ -1,4 +1,5 @@
-export enum TimerMode {
-  WORK = 'WORK',
-  REST = 'REST',
-}
+import { z } from 'zod';
+
+export const TimerModeSchema = z.enum(['WORK', 'REST']);
+
+export type TimerMode = z.infer<typeof TimerModeSchema>;

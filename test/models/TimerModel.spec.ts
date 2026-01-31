@@ -1,14 +1,12 @@
-import { TimerMode } from '../../src/models/TimerMode';
 import { createInitialModel, type TimerModel, TimerModelSchema } from '../../src/models/TimerModel';
-import { TimerState } from '../../src/models/TimerState';
 
 describe('TimerModel', () => {
   describe('Valid Input', () => {
     it('Should validate valid model state', () => {
       const input = {
         remainingSeconds: 1500,
-        currentMode: TimerMode.WORK,
-        state: TimerState.STOPPED,
+        currentMode: 'WORK' as const,
+        state: 'STOPPED' as const,
         totalSeconds: 1500,
       };
 
@@ -24,8 +22,8 @@ describe('TimerModel', () => {
     it('Should accept remainingSeconds = 0 (nonnegative)', () => {
       const input = {
         remainingSeconds: 0,
-        currentMode: TimerMode.WORK,
-        state: TimerState.STOPPED,
+        currentMode: 'WORK' as const,
+        state: 'STOPPED' as const,
         totalSeconds: 1500,
       };
 
@@ -36,8 +34,8 @@ describe('TimerModel', () => {
     it('Should accept WORK mode', () => {
       const input = {
         remainingSeconds: 1500,
-        currentMode: TimerMode.WORK,
-        state: TimerState.STOPPED,
+        currentMode: 'WORK' as const,
+        state: 'STOPPED' as const,
         totalSeconds: 1500,
       };
 
@@ -48,8 +46,8 @@ describe('TimerModel', () => {
     it('Should accept REST mode', () => {
       const input = {
         remainingSeconds: 300,
-        currentMode: TimerMode.REST,
-        state: TimerState.STOPPED,
+        currentMode: 'REST' as const,
+        state: 'STOPPED' as const,
         totalSeconds: 300,
       };
 
@@ -60,8 +58,8 @@ describe('TimerModel', () => {
     it('Should accept RUNNING state', () => {
       const input = {
         remainingSeconds: 1500,
-        currentMode: TimerMode.WORK,
-        state: TimerState.RUNNING,
+        currentMode: 'WORK' as const,
+        state: 'RUNNING' as const,
         totalSeconds: 1500,
       };
 
@@ -72,8 +70,8 @@ describe('TimerModel', () => {
     it('Should accept STOPPED state', () => {
       const input = {
         remainingSeconds: 1500,
-        currentMode: TimerMode.WORK,
-        state: TimerState.STOPPED,
+        currentMode: 'WORK' as const,
+        state: 'STOPPED' as const,
         totalSeconds: 1500,
       };
 
@@ -86,8 +84,8 @@ describe('TimerModel', () => {
     it('Should reject negative remainingSeconds', () => {
       const model = {
         remainingSeconds: -1,
-        currentMode: TimerMode.WORK,
-        state: TimerState.STOPPED,
+        currentMode: 'WORK' as const,
+        state: 'STOPPED' as const,
         totalSeconds: 1500,
       };
 
@@ -98,8 +96,8 @@ describe('TimerModel', () => {
     it('Should reject non-integer remainingSeconds', () => {
       const model = {
         remainingSeconds: 1500.5,
-        currentMode: TimerMode.WORK,
-        state: TimerState.STOPPED,
+        currentMode: 'WORK' as const,
+        state: 'STOPPED' as const,
         totalSeconds: 1500,
       };
 
@@ -111,7 +109,7 @@ describe('TimerModel', () => {
       const model = {
         remainingSeconds: 1500,
         currentMode: 'INVALID_MODE',
-        state: TimerState.STOPPED,
+        state: 'STOPPED' as const,
         totalSeconds: 1500,
       };
 
@@ -122,7 +120,7 @@ describe('TimerModel', () => {
     it('Should reject invalid state value', () => {
       const model = {
         remainingSeconds: 1500,
-        currentMode: TimerMode.WORK,
+        currentMode: 'WORK' as const,
         state: 'INVALID_STATE',
         totalSeconds: 1500,
       };
@@ -134,8 +132,8 @@ describe('TimerModel', () => {
     it('Should reject zero totalSeconds', () => {
       const model = {
         remainingSeconds: 0,
-        currentMode: TimerMode.WORK,
-        state: TimerState.STOPPED,
+        currentMode: 'WORK' as const,
+        state: 'STOPPED' as const,
         totalSeconds: 0,
       };
 
@@ -146,8 +144,8 @@ describe('TimerModel', () => {
     it('Should reject negative totalSeconds', () => {
       const model = {
         remainingSeconds: 1500,
-        currentMode: TimerMode.WORK,
-        state: TimerState.STOPPED,
+        currentMode: 'WORK' as const,
+        state: 'STOPPED' as const,
         totalSeconds: -1,
       };
 
@@ -158,8 +156,8 @@ describe('TimerModel', () => {
     it('Should reject non-integer totalSeconds', () => {
       const model = {
         remainingSeconds: 1500,
-        currentMode: TimerMode.WORK,
-        state: TimerState.STOPPED,
+        currentMode: 'WORK' as const,
+        state: 'STOPPED' as const,
         totalSeconds: 1500.5,
       };
 
@@ -170,8 +168,8 @@ describe('TimerModel', () => {
     it('Should reject missing fields', () => {
       const model = {
         remainingSeconds: 1500,
-        currentMode: TimerMode.WORK,
-        state: TimerState.STOPPED,
+        currentMode: 'WORK' as const,
+        state: 'STOPPED' as const,
       };
 
       const result = TimerModelSchema.safeParse(model);
@@ -189,13 +187,13 @@ describe('TimerModel', () => {
     it('Should create initial model with WORK mode', () => {
       const model = createInitialModel(25);
 
-      expect(model.currentMode).toBe(TimerMode.WORK);
+      expect(model.currentMode).toBe('WORK');
     });
 
     it('Should create initial model with STOPPED state', () => {
       const model = createInitialModel(25);
 
-      expect(model.state).toBe(TimerState.STOPPED);
+      expect(model.state).toBe('STOPPED');
     });
 
     it('Should create initial model with correct totalSeconds', () => {
