@@ -117,4 +117,58 @@ describe('TimerViewModel', () => {
       });
     });
   });
+
+  describe('start() and stop() Methods', () => {
+    describe('start()', () => {
+      it('Should change state to RUNNING', () => {
+        viewModel.start();
+        expect(viewModel.state).toBe('RUNNING');
+      });
+
+      it('Should start timer via TimerService', () => {
+        viewModel.start();
+        expect(timerService.getActiveCount()).toBe(1);
+      });
+
+      it('Should do nothing if already RUNNING', () => {
+        viewModel.start();
+        const firstTimerId = timerService.getActiveCount();
+
+        viewModel.start(); // Try to start again
+        const secondTimerId = timerService.getActiveCount();
+
+        expect(firstTimerId).toBe(secondTimerId);
+      });
+
+      it('Should register a callback with 1000ms interval', () => {
+        const startTimerSpy = spyOn(timerService, 'startTimer').and.callThrough();
+        viewModel.start();
+
+        expect(startTimerSpy).toHaveBeenCalledWith(jasmine.any(Function), 1000);
+      });
+    });
+
+    describe('stop()', () => {
+      it('Should change state to STOPPED', () => {
+        viewModel.start();
+        viewModel.stop();
+        expect(viewModel.state).toBe('STOPPED');
+      });
+
+      it('Should stop timer via TimerService', () => {
+        viewModel.start();
+        expect(timerService.getActiveCount()).toBe(1);
+
+        viewModel.stop();
+        expect(timerService.getActiveCount()).toBe(0);
+      });
+
+      it('Should do nothing if already STOPPED', () => {
+        // Initially STOPPED, try to stop again
+        const initialCount = timerService.getActiveCount();
+        viewModel.stop();
+        expect(timerService.getActiveCount()).toBe(initialCount);
+      });
+    });
+  });
 });

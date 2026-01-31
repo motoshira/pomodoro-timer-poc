@@ -59,4 +59,31 @@ export class TimerViewModel {
   get startStopLabel(): string {
     return this._state === 'STOPPED' ? 'Start' : 'Stop';
   }
+
+  start(): void {
+    if (this._state === 'RUNNING') return;
+
+    this._state = 'RUNNING';
+    this._timerId = this.timerService.startTimer(
+      () => this._tick(),
+      1000
+    );
+    // TODO: Emit property notification when GObject is implemented
+  }
+
+  stop(): void {
+    if (this._state === 'STOPPED') return;
+
+    this._state = 'STOPPED';
+    if (this._timerId !== null) {
+      this.timerService.stopTimer(this._timerId);
+      this._timerId = null;
+    }
+    // TODO: Emit property notification when GObject is implemented
+  }
+
+  private _tick(): boolean {
+    // TODO: Implement in next step
+    return true;
+  }
 }
