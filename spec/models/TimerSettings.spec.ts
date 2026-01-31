@@ -3,7 +3,7 @@ import { z } from 'zod';
 describe('TimerSettings', () => {
   const TimerSettingsSchema = z.object({
     workDuration: z.number().positive().int(),
-    restDuration: z.number().positive().int()
+    restDuration: z.number().positive().int(),
   });
 
   type TimerSettings = z.infer<typeof TimerSettingsSchema>;
@@ -12,7 +12,7 @@ describe('TimerSettings', () => {
     it('should accept valid settings', () => {
       const validSettings = {
         workDuration: 25,
-        restDuration: 5
+        restDuration: 5,
       };
 
       const result = TimerSettingsSchema.safeParse(validSettings);
@@ -26,7 +26,7 @@ describe('TimerSettings', () => {
     it('should reject negative work duration', () => {
       const invalidSettings = {
         workDuration: -5,
-        restDuration: 5
+        restDuration: 5,
       };
 
       const result = TimerSettingsSchema.safeParse(invalidSettings);
@@ -36,7 +36,7 @@ describe('TimerSettings', () => {
     it('should reject negative rest duration', () => {
       const invalidSettings = {
         workDuration: 25,
-        restDuration: -5
+        restDuration: -5,
       };
 
       const result = TimerSettingsSchema.safeParse(invalidSettings);
@@ -46,7 +46,7 @@ describe('TimerSettings', () => {
     it('should reject zero work duration', () => {
       const invalidSettings = {
         workDuration: 0,
-        restDuration: 5
+        restDuration: 5,
       };
 
       const result = TimerSettingsSchema.safeParse(invalidSettings);
@@ -56,7 +56,7 @@ describe('TimerSettings', () => {
     it('should reject non-integer work duration', () => {
       const invalidSettings = {
         workDuration: 25.5,
-        restDuration: 5
+        restDuration: 5,
       };
 
       const result = TimerSettingsSchema.safeParse(invalidSettings);
@@ -65,7 +65,7 @@ describe('TimerSettings', () => {
 
     it('should reject missing fields', () => {
       const invalidSettings = {
-        workDuration: 25
+        workDuration: 25,
       };
 
       const result = TimerSettingsSchema.safeParse(invalidSettings);
@@ -77,7 +77,7 @@ describe('TimerSettings', () => {
     it('should use 25 minutes for work duration by default', () => {
       const defaultSettings: TimerSettings = {
         workDuration: 25,
-        restDuration: 5
+        restDuration: 5,
       };
 
       expect(defaultSettings.workDuration).toBe(25);
@@ -86,7 +86,7 @@ describe('TimerSettings', () => {
     it('should use 5 minutes for rest duration by default', () => {
       const defaultSettings: TimerSettings = {
         workDuration: 25,
-        restDuration: 5
+        restDuration: 5,
       };
 
       expect(defaultSettings.restDuration).toBe(5);
