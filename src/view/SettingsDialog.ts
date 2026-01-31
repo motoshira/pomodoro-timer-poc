@@ -1,7 +1,7 @@
 import GObject from 'gi://GObject';
 import Gtk from 'gi://Gtk';
-import type { SettingsViewModel } from '../viewModels/SettingsViewModel';
 import type { TimerSettings } from '../models/TimerSettings';
+import type { SettingsViewModel } from '../viewModels/SettingsViewModel';
 
 export const SettingsDialog = GObject.registerClass(
   {

@@ -1,7 +1,7 @@
 import GObject from 'gi://GObject';
 import Gtk from 'gi://Gtk';
-import type { TimerViewModel } from '../viewModels/TimerViewModel';
 import { createSettingsViewModel } from '../viewModels/SettingsViewModel';
+import type { TimerViewModel } from '../viewModels/TimerViewModel';
 import { SettingsDialog } from './SettingsDialog';
 
 export const MainWindow = GObject.registerClass(
