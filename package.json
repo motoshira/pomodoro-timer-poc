@@ -1,0 +1,21 @@
+{
+  "name": "pomodoro-timer",
+  "version": "1.0.0",
+  "description": "GTK Pomodoro Timer built with GJS and TypeScript",
+  "type": "module",
+  "scripts": {
+    "build": "tsc",
+    "start": "npm run build && gjs -m dist/main.js",
+    "typecheck": "tsc --noEmit",
+    "dev": "tsc --watch",
+    "lint": "biome check --write"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "^2.3.13",
+    "@girs/gio-2.0": "2.86.0-4.0.0-beta.38",
+    "@girs/gjs": "^4.0.0-beta.38",
+    "@girs/glib-2.0": "2.86.0-4.0.0-beta.38",
+    "@girs/gtk-4.0": "4.20.1-4.0.0-beta.38",
+    "typescript": "^5.7.2"
+  }
+}
