@@ -99,9 +99,7 @@ export class TimerViewModel {
 
   private _transitionToNextMode(): void {
     // Switch mode
-    this._currentMode = this._currentMode === 'WORK'
-      ? 'REST'
-      : 'WORK';
+    this._currentMode = this._currentMode === 'WORK' ? 'REST' : 'WORK';
 
     // Set to stopped state
     this._state = 'STOPPED';
@@ -113,11 +111,33 @@ export class TimerViewModel {
   }
 
   private _resetToCurrentMode(): void {
-    const durationMinutes = this._currentMode === 'WORK'
-      ? this._settings.workDuration
-      : this._settings.restDuration;
+    const durationMinutes =
+      this._currentMode === 'WORK' ? this._settings.workDuration : this._settings.restDuration;
 
     this._totalSeconds = durationMinutes * 60;
     this._remainingSeconds = this._totalSeconds;
+  }
+
+  skip(): void {
+    // Stop timer if running
+    if (this._timerId !== null) {
+      this.timerService.stopTimer(this._timerId);
+      this._timerId = null;
+    }
+
+    this._transitionToNextMode();
+  }
+
+  reset(): void {
+    // Stop timer if running
+    if (this._timerId !== null) {
+      this.timerService.stopTimer(this._timerId);
+      this._timerId = null;
+    }
+
+    this._state = 'STOPPED';
+    this._remainingSeconds = this._totalSeconds;
+
+    // TODO: Emit property notifications when GObject is implemented
   }
 }

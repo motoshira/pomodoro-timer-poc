@@ -261,7 +261,7 @@ describe('TimerViewModel', () => {
         expect(viewModel.state).toBe('STOPPED');
       });
 
-      it('Should set remainingSeconds to new mode\'s duration (WORK → REST)', () => {
+      it("Should set remainingSeconds to new mode's duration (WORK → REST)", () => {
         const settings = storage.getDefaultSettings();
         const expectedRestSeconds = settings.restDuration * 60;
 
@@ -271,7 +271,7 @@ describe('TimerViewModel', () => {
         expect(viewModel.remainingSeconds).toBe(expectedRestSeconds);
       });
 
-      it('Should set remainingSeconds to new mode\'s duration (REST → WORK)', () => {
+      it("Should set remainingSeconds to new mode's duration (REST → WORK)", () => {
         const settings = storage.getDefaultSettings();
         const expectedWorkSeconds = settings.workDuration * 60;
 
@@ -282,6 +282,113 @@ describe('TimerViewModel', () => {
         (viewModel as any)._transitionToNextMode();
 
         expect(viewModel.remainingSeconds).toBe(expectedWorkSeconds);
+      });
+    });
+  });
+
+  describe('skip() and reset() Methods', () => {
+    describe('skip()', () => {
+      it('Should transition to next mode', () => {
+        expect(viewModel.currentMode).toBe('WORK');
+
+        viewModel.skip();
+
+        expect(viewModel.currentMode).toBe('REST');
+      });
+
+      it('Should set state to STOPPED', () => {
+        viewModel.start();
+        expect(viewModel.state).toBe('RUNNING');
+
+        viewModel.skip();
+
+        expect(viewModel.state).toBe('STOPPED');
+      });
+
+      it('Should stop running timer if active', () => {
+        viewModel.start();
+        expect(timerService.getActiveCount()).toBe(1);
+
+        viewModel.skip();
+
+        expect(timerService.getActiveCount()).toBe(0);
+      });
+
+      it('Should work when already stopped', () => {
+        expect(viewModel.state).toBe('STOPPED');
+
+        viewModel.skip();
+
+        expect(viewModel.state).toBe('STOPPED');
+        expect(viewModel.currentMode).toBe('REST');
+      });
+    });
+
+    describe('reset()', () => {
+      it('Should reset remainingSeconds to totalSeconds', () => {
+        // Decrement the timer
+        viewModel.start();
+        timerService.tick(1);
+        timerService.tick(1);
+        timerService.tick(1);
+
+        const initialTotal = viewModel.settings.workDuration * 60;
+        expect(viewModel.remainingSeconds).toBe(initialTotal - 3);
+
+        viewModel.reset();
+
+        expect(viewModel.remainingSeconds).toBe(initialTotal);
+      });
+
+      it('Should set state to STOPPED', () => {
+        viewModel.start();
+        expect(viewModel.state).toBe('RUNNING');
+
+        viewModel.reset();
+
+        expect(viewModel.state).toBe('STOPPED');
+      });
+
+      it('Should keep current mode unchanged', () => {
+        const modeBefore = viewModel.currentMode;
+
+        viewModel.reset();
+
+        expect(viewModel.currentMode).toBe(modeBefore);
+      });
+
+      it('Should stop running timer if active', () => {
+        viewModel.start();
+        expect(timerService.getActiveCount()).toBe(1);
+
+        viewModel.reset();
+
+        expect(timerService.getActiveCount()).toBe(0);
+      });
+
+      it('Should work when already stopped', () => {
+        viewModel.reset();
+
+        expect(viewModel.state).toBe('STOPPED');
+      });
+
+      it('Should work correctly in REST mode', () => {
+        // Skip to REST mode
+        viewModel.skip();
+        expect(viewModel.currentMode).toBe('REST');
+
+        // Start and decrement
+        viewModel.start();
+        timerService.tick(1);
+
+        const expectedRestSeconds = viewModel.settings.restDuration * 60;
+        expect(viewModel.remainingSeconds).toBe(expectedRestSeconds - 1);
+
+        // Reset should restore REST duration
+        viewModel.reset();
+
+        expect(viewModel.remainingSeconds).toBe(expectedRestSeconds);
+        expect(viewModel.currentMode).toBe('REST');
       });
     });
   });
