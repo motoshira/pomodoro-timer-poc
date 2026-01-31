@@ -63,4 +63,5 @@ jobs:
           path: |
             test-results/
             coverage/
+          if-no-files-found: ignore
           retention-days: 30
