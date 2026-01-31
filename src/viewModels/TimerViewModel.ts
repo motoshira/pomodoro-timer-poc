@@ -1,10 +1,213 @@
 import GObject from 'gi://GObject';
 import type { TimerMode } from '../models/TimerMode';
-import type { TimerSettings } from '../models/TimerSettings';
+import {
+  createInitialModel,
+  reset as resetModel,
+  start as startModel,
+  stop as stopModel,
+  type TimerModel,
+  tick as tickModel,
+  transitionToNextMode,
+} from '../models/TimerModel';
+import { type TimerSettings, updateSettings as updateSettingsModel } from '../models/TimerSettings';
 import type { TimerState } from '../models/TimerState';
 import type { ISettingsStorage } from '../services/ISettingsStorage';
 import type { ITimerService } from '../services/ITimerService';
 
+/** @todo Refactor */
+class _TimerViewModel extends GObject.Object {
+  private _model!: TimerModel;
+  private _remainingSeconds!: number;
+  private _currentMode!: TimerMode;
+  private _state!: TimerState;
+  private _settings!: TimerSettings;
+  private _timerId: number | null = null;
+  private timerService!: ITimerService;
+  private storage!: ISettingsStorage;
+
+  _init(params?: Partial<GObject.Object.ConstructorProps>) {
+    super._init(params);
+  }
+
+  initialize(timerService: ITimerService, storage: ISettingsStorage): void {
+    this.timerService = timerService;
+    this.storage = storage;
+    this._settings = storage.load();
+    this._model = createInitialModel(this._settings.workDuration);
+    this._syncFromModel();
+  }
+
+  // Sync GObject property fields from model
+  private _syncFromModel(): void {
+    this._remainingSeconds = this._model.remainingSeconds;
+    this._currentMode = this._model.currentMode;
+    this._state = this._model.state;
+  }
+
+  // Getters for GObject properties
+  get remainingSeconds(): number {
+    return this._remainingSeconds;
+  }
+
+  get currentMode(): TimerMode {
+    return this._currentMode;
+  }
+
+  get state(): TimerState {
+    return this._state;
+  }
+
+  get settings(): TimerSettings {
+    return { ...this._settings };
+  }
+
+  get displayTime(): string {
+    const minutes = Math.floor(this._remainingSeconds / 60);
+    const seconds = this._remainingSeconds % 60;
+    return `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+  }
+
+  get modeLabel(): string {
+    return this._currentMode === 'WORK' ? 'Work' : 'Rest';
+  }
+
+  get modeIcon(): string {
+    return this._currentMode === 'WORK'
+      ? 'preferences-system-time-symbolic'
+      : 'preferences-desktop-screensaver-symbolic';
+  }
+
+  get startStopLabel(): string {
+    return this._state === 'STOPPED' ? 'Start' : 'Stop';
+  }
+
+  start(): void {
+    const { result, hasChanged } = startModel(this._model);
+    if (!hasChanged) return;
+
+    this._model = result;
+    this._syncFromModel();
+    this._timerId = this.timerService.startTimer(() => this._tick(), 1000);
+    this.notify('state');
+    this.notify('start-stop-label');
+  }
+
+  stop(): void {
+    const { result, hasChanged } = stopModel(this._model);
+    if (!hasChanged) return;
+
+    this._model = result;
+    this._syncFromModel();
+    if (this._timerId !== null) {
+      this.timerService.stopTimer(this._timerId);
+      this._timerId = null;
+    }
+    this.notify('state');
+    this.notify('start-stop-label');
+  }
+
+  private _tick(): boolean {
+    if (this._remainingSeconds > 0) {
+      this._model = tickModel(this._model);
+      this._syncFromModel();
+      this.notify('remaining-seconds');
+      this.notify('display-time');
+
+      // Check if we reached zero after decrementing
+      if (this._remainingSeconds === 0) {
+        this._transitionToNextMode();
+        return false;
+      }
+
+      return true;
+    }
+
+    // Already at zero (shouldn't happen, but handle gracefully)
+    return false;
+  }
+
+  private _transitionToNextMode(): void {
+    // Clear timer ID (timer already stopped by returning false from _tick)
+    this._timerId = null;
+
+    // Get next mode duration
+    const nextModeDurationMinutes =
+      this._currentMode === 'WORK' ? this._settings.restDuration : this._settings.workDuration;
+
+    // Transition to next mode
+    this._model = transitionToNextMode(this._model, nextModeDurationMinutes);
+    this._syncFromModel();
+
+    // Emit property notifications
+    this.notify('current-mode');
+    this.notify('mode-label');
+    this.notify('mode-icon');
+    this.notify('state');
+    this.notify('start-stop-label');
+    this.notify('remaining-seconds');
+    this.notify('display-time');
+  }
+
+  skip(): void {
+    // Stop timer if running
+    if (this._timerId !== null) {
+      this.timerService.stopTimer(this._timerId);
+      this._timerId = null;
+    }
+
+    this._transitionToNextMode();
+  }
+
+  reset(): void {
+    // Stop timer if running
+    if (this._timerId !== null) {
+      this.timerService.stopTimer(this._timerId);
+      this._timerId = null;
+    }
+
+    this._model = resetModel(this._model);
+    this._syncFromModel();
+
+    // Emit property notifications
+    this.notify('state');
+    this.notify('start-stop-label');
+    this.notify('remaining-seconds');
+    this.notify('display-time');
+  }
+
+  updateSettings(updates: Partial<{ workDuration: number; restDuration: number }>): void {
+    const newSettings = updateSettingsModel(this._settings, updates);
+    if (newSettings === null) {
+      // Validation failed - do nothing
+      return;
+    }
+
+    this._settings = newSettings;
+
+    // Persist to storage
+    this.storage.save(this._settings);
+
+    // If stopped, apply new duration to current mode
+    if (this._state === 'STOPPED') {
+      const durationMinutes =
+        this._currentMode === 'WORK' ? this._settings.workDuration : this._settings.restDuration;
+      const totalSeconds = durationMinutes * 60;
+
+      this._model = {
+        ...this._model,
+        totalSeconds: totalSeconds,
+        remainingSeconds: totalSeconds,
+      };
+      this._syncFromModel();
+
+      // Emit property notifications
+      this.notify('remaining-seconds');
+      this.notify('display-time');
+    }
+  }
+}
+
+/** @todo Refactor */
 const TimerViewModelClass = GObject.registerClass(
   {
     GTypeName: 'PomodoroTimerViewModel',
@@ -62,180 +265,7 @@ const TimerViewModelClass = GObject.registerClass(
       ),
     },
   },
-  class TimerViewModel extends GObject.Object {
-    private _remainingSeconds!: number;
-    private _currentMode!: TimerMode;
-    private _state!: TimerState;
-    private _totalSeconds!: number;
-    private _settings!: TimerSettings;
-    private _timerId: number | null = null;
-    private timerService!: ITimerService;
-    private storage!: ISettingsStorage;
-
-    _init(params?: Partial<GObject.Object.ConstructorProps>) {
-      super._init(params);
-    }
-
-    initialize(timerService: ITimerService, storage: ISettingsStorage): void {
-      this.timerService = timerService;
-      this.storage = storage;
-      this._settings = storage.load();
-      this._currentMode = 'WORK';
-      this._state = 'STOPPED';
-      this._totalSeconds = this._settings.workDuration * 60;
-      this._remainingSeconds = this._totalSeconds;
-    }
-
-    // Getters for GObject properties
-    get remainingSeconds(): number {
-      return this._remainingSeconds;
-    }
-
-    get currentMode(): TimerMode {
-      return this._currentMode;
-    }
-
-    get state(): TimerState {
-      return this._state;
-    }
-
-    get settings(): TimerSettings {
-      return { ...this._settings };
-    }
-
-    get displayTime(): string {
-      const minutes = Math.floor(this._remainingSeconds / 60);
-      const seconds = this._remainingSeconds % 60;
-      return `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
-    }
-
-    get modeLabel(): string {
-      return this._currentMode === 'WORK' ? 'Work' : 'Rest';
-    }
-
-    get modeIcon(): string {
-      return this._currentMode === 'WORK'
-        ? 'preferences-system-time-symbolic'
-        : 'preferences-desktop-screensaver-symbolic';
-    }
-
-    get startStopLabel(): string {
-      return this._state === 'STOPPED' ? 'Start' : 'Stop';
-    }
-
-    start(): void {
-      if (this._state === 'RUNNING') return;
-
-      this._state = 'RUNNING';
-      this._timerId = this.timerService.startTimer(() => this._tick(), 1000);
-      this.notify('state');
-      this.notify('start-stop-label');
-    }
-
-    stop(): void {
-      if (this._state === 'STOPPED') return;
-
-      this._state = 'STOPPED';
-      if (this._timerId !== null) {
-        this.timerService.stopTimer(this._timerId);
-        this._timerId = null;
-      }
-      this.notify('state');
-      this.notify('start-stop-label');
-    }
-
-    private _tick(): boolean {
-      if (this._remainingSeconds > 0) {
-        this._remainingSeconds--;
-        this.notify('remaining-seconds');
-        this.notify('display-time');
-
-        // Check if we reached zero after decrementing
-        if (this._remainingSeconds === 0) {
-          this._transitionToNextMode();
-          return false;
-        }
-
-        return true;
-      }
-
-      // Already at zero (shouldn't happen, but handle gracefully)
-      return false;
-    }
-
-    private _transitionToNextMode(): void {
-      // Switch mode
-      this._currentMode = this._currentMode === 'WORK' ? 'REST' : 'WORK';
-
-      // Set to stopped state
-      this._state = 'STOPPED';
-
-      // Clear timer ID (timer already stopped by returning false from _tick)
-      this._timerId = null;
-
-      // Reset timer for new mode
-      this._resetToCurrentMode();
-
-      // Emit property notifications
-      this.notify('current-mode');
-      this.notify('mode-label');
-      this.notify('mode-icon');
-      this.notify('state');
-      this.notify('start-stop-label');
-      this.notify('remaining-seconds');
-      this.notify('display-time');
-    }
-
-    private _resetToCurrentMode(): void {
-      const durationMinutes =
-        this._currentMode === 'WORK' ? this._settings.workDuration : this._settings.restDuration;
-
-      this._totalSeconds = durationMinutes * 60;
-      this._remainingSeconds = this._totalSeconds;
-    }
-
-    skip(): void {
-      // Stop timer if running
-      if (this._timerId !== null) {
-        this.timerService.stopTimer(this._timerId);
-        this._timerId = null;
-      }
-
-      this._transitionToNextMode();
-    }
-
-    reset(): void {
-      // Stop timer if running
-      if (this._timerId !== null) {
-        this.timerService.stopTimer(this._timerId);
-        this._timerId = null;
-      }
-
-      this._state = 'STOPPED';
-      this._remainingSeconds = this._totalSeconds;
-
-      // Emit property notifications
-      this.notify('state');
-      this.notify('start-stop-label');
-      this.notify('remaining-seconds');
-      this.notify('display-time');
-    }
-
-    updateSettings(settings: TimerSettings): void {
-      this._settings = { ...settings };
-
-      // Persist to storage
-      this.storage.save(this._settings);
-
-      // If stopped, apply new duration to current mode
-      if (this._state === 'STOPPED') {
-        this._resetToCurrentMode();
-        // Emit property notifications
-        this.notify('remaining-seconds');
-        this.notify('display-time');
-      }
-    }
-  },
+  _TimerViewModel,
 );
 
 // Type alias for the ViewModel instance

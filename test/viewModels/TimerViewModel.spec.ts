@@ -1,4 +1,4 @@
-import { TimerSettingsSchema } from '../../src/models/TimerSettings';
+import { createDefaultSettings, updateSettings } from '../../src/models/TimerSettings';
 import { createTimerViewModel, type TimerViewModel } from '../../src/viewModels/TimerViewModel';
 import { FakeTimerService } from '../services/FakeTimerService';
 import { MockSettingsStorage } from '../services/MockSettingsStorage';
@@ -38,8 +38,14 @@ describe('TimerViewModel', () => {
     it('Should load settings from storage', () => {
       // Create new storage with custom settings
       const customStorage = new MockSettingsStorage();
-      const customSettings = TimerSettingsSchema.parse({ workDuration: 30, restDuration: 10 });
-      customStorage.save(customSettings);
+      const defaultSettings = createDefaultSettings();
+      const customSettings = updateSettings(defaultSettings, {
+        workDuration: 30,
+        restDuration: 10,
+      });
+      if (customSettings) {
+        customStorage.save(customSettings);
+      }
 
       // Create new ViewModel with custom storage
       const customViewModel = createTimerViewModel(timerService, customStorage);
@@ -59,19 +65,25 @@ describe('TimerViewModel', () => {
       it('Should format "01:30" for 90 seconds', () => {
         // Manually set remainingSeconds to 90
         // biome-ignore lint/suspicious/noExplicitAny: test helper to access private member
-        (viewModel as any)._remainingSeconds = 90;
+        (viewModel as any)._model = { ...(viewModel as any)._model, remainingSeconds: 90 };
+        // biome-ignore lint/suspicious/noExplicitAny: test helper to access private member
+        (viewModel as any)._syncFromModel();
         expect(viewModel.displayTime).toBe('01:30');
       });
 
       it('Should format "00:00" for 0 seconds', () => {
         // biome-ignore lint/suspicious/noExplicitAny: test helper to access private member
-        (viewModel as any)._remainingSeconds = 0;
+        (viewModel as any)._model = { ...(viewModel as any)._model, remainingSeconds: 0 };
+        // biome-ignore lint/suspicious/noExplicitAny: test helper to access private member
+        (viewModel as any)._syncFromModel();
         expect(viewModel.displayTime).toBe('00:00');
       });
 
       it('Should pad single digits with zeros', () => {
         // biome-ignore lint/suspicious/noExplicitAny: test helper to access private member
-        (viewModel as any)._remainingSeconds = 65; // 1 minute, 5 seconds
+        (viewModel as any)._model = { ...(viewModel as any)._model, remainingSeconds: 65 };
+        // biome-ignore lint/suspicious/noExplicitAny: test helper to access private member
+        (viewModel as any)._syncFromModel();
         expect(viewModel.displayTime).toBe('01:05');
       });
     });
@@ -83,7 +95,9 @@ describe('TimerViewModel', () => {
 
       it('Should return "Rest" for REST mode', () => {
         // biome-ignore lint/suspicious/noExplicitAny: test helper to access private member
-        (viewModel as any)._currentMode = 'REST';
+        (viewModel as any)._model = { ...(viewModel as any)._model, currentMode: 'REST' };
+        // biome-ignore lint/suspicious/noExplicitAny: test helper to access private member
+        (viewModel as any)._syncFromModel();
         expect(viewModel.modeLabel).toBe('Rest');
       });
     });
@@ -95,7 +109,9 @@ describe('TimerViewModel', () => {
 
       it('Should return rest icon for REST mode', () => {
         // biome-ignore lint/suspicious/noExplicitAny: test helper to access private member
-        (viewModel as any)._currentMode = 'REST';
+        (viewModel as any)._model = { ...(viewModel as any)._model, currentMode: 'REST' };
+        // biome-ignore lint/suspicious/noExplicitAny: test helper to access private member
+        (viewModel as any)._syncFromModel();
         expect(viewModel.modeIcon).toBe('preferences-desktop-screensaver-symbolic');
       });
     });
@@ -201,7 +217,9 @@ describe('TimerViewModel', () => {
     it('Should return false when reaching 0', () => {
       // Set to 1 second remaining
       // biome-ignore lint/suspicious/noExplicitAny: test helper to access private member
-      (viewModel as any)._remainingSeconds = 1;
+      (viewModel as any)._model = { ...(viewModel as any)._model, remainingSeconds: 1 };
+      // biome-ignore lint/suspicious/noExplicitAny: test helper to access private member
+      (viewModel as any)._syncFromModel();
       viewModel.start();
 
       const timerId = 1;
@@ -217,7 +235,9 @@ describe('TimerViewModel', () => {
 
       // Set to 1 second remaining
       // biome-ignore lint/suspicious/noExplicitAny: test helper to access private member
-      (viewModel as any)._remainingSeconds = 1;
+      (viewModel as any)._model = { ...(viewModel as any)._model, remainingSeconds: 1 };
+      // biome-ignore lint/suspicious/noExplicitAny: test helper to access private member
+      (viewModel as any)._syncFromModel();
       viewModel.start();
 
       const timerId = 1;
@@ -254,7 +274,9 @@ describe('TimerViewModel', () => {
       it('Should transition from REST to WORK', () => {
         // Set to REST mode first
         // biome-ignore lint/suspicious/noExplicitAny: test helper to access private member
-        (viewModel as any)._currentMode = 'REST';
+        (viewModel as any)._model = { ...(viewModel as any)._model, currentMode: 'REST' };
+        // biome-ignore lint/suspicious/noExplicitAny: test helper to access private member
+        (viewModel as any)._syncFromModel();
 
         // Trigger transition
         // biome-ignore lint/suspicious/noExplicitAny: test helper to access private member
@@ -411,18 +433,14 @@ describe('TimerViewModel', () => {
 
   describe('updateSettings() Method', () => {
     it('Should update internal settings', () => {
-      const newSettings = TimerSettingsSchema.parse({ workDuration: 30, restDuration: 10 });
-
-      viewModel.updateSettings(newSettings);
+      viewModel.updateSettings({ workDuration: 30, restDuration: 10 });
 
       expect(viewModel.settings.workDuration).toBe(30);
       expect(viewModel.settings.restDuration).toBe(10);
     });
 
     it('Should persist to storage', () => {
-      const newSettings = TimerSettingsSchema.parse({ workDuration: 30, restDuration: 10 });
-
-      viewModel.updateSettings(newSettings);
+      viewModel.updateSettings({ workDuration: 30, restDuration: 10 });
 
       const loadedSettings = storage.load();
       expect(loadedSettings.workDuration).toBe(30);
@@ -433,8 +451,7 @@ describe('TimerViewModel', () => {
       expect(viewModel.state).toBe('STOPPED');
       expect(viewModel.currentMode).toBe('WORK');
 
-      const newSettings = TimerSettingsSchema.parse({ workDuration: 30, restDuration: 10 });
-      viewModel.updateSettings(newSettings);
+      viewModel.updateSettings({ workDuration: 30, restDuration: 10 });
 
       // Should apply new work duration
       expect(viewModel.remainingSeconds).toBe(30 * 60);
@@ -445,8 +462,7 @@ describe('TimerViewModel', () => {
       expect(viewModel.state).toBe('STOPPED');
       expect(viewModel.currentMode).toBe('REST');
 
-      const newSettings = TimerSettingsSchema.parse({ workDuration: 30, restDuration: 10 });
-      viewModel.updateSettings(newSettings);
+      viewModel.updateSettings({ workDuration: 30, restDuration: 10 });
 
       // Should apply new rest duration
       expect(viewModel.remainingSeconds).toBe(10 * 60);
@@ -456,8 +472,7 @@ describe('TimerViewModel', () => {
       viewModel.start();
       const initialSeconds = viewModel.remainingSeconds;
 
-      const newSettings = TimerSettingsSchema.parse({ workDuration: 30, restDuration: 10 });
-      viewModel.updateSettings(newSettings);
+      viewModel.updateSettings({ workDuration: 30, restDuration: 10 });
 
       // Should NOT change remainingSeconds while running
       expect(viewModel.remainingSeconds).toBe(initialSeconds);
@@ -473,11 +488,12 @@ describe('TimerViewModel', () => {
     it('Should apply new settings after running timer completes cycle', () => {
       // Set to 1 second remaining and start
       // biome-ignore lint/suspicious/noExplicitAny: test helper to access private member
-      (viewModel as any)._remainingSeconds = 1;
+      (viewModel as any)._model = { ...(viewModel as any)._model, remainingSeconds: 1 };
+      // biome-ignore lint/suspicious/noExplicitAny: test helper to access private member
+      (viewModel as any)._syncFromModel();
       viewModel.start();
 
-      const newSettings = TimerSettingsSchema.parse({ workDuration: 30, restDuration: 10 });
-      viewModel.updateSettings(newSettings);
+      viewModel.updateSettings({ workDuration: 30, restDuration: 10 });
 
       // Complete the cycle (tick to 0, will transition to REST)
       timerService.tick(1);
@@ -493,9 +509,13 @@ describe('TimerViewModel', () => {
       it('Full work cycle: start → tick to 0 → auto transition to REST', () => {
         // Set to 3 seconds for quick test
         // biome-ignore lint/suspicious/noExplicitAny: test helper to access private member
-        (viewModel as any)._remainingSeconds = 3;
+        (viewModel as any)._model = {
+          ...(viewModel as any)._model,
+          remainingSeconds: 3,
+          totalSeconds: 3,
+        };
         // biome-ignore lint/suspicious/noExplicitAny: test helper to access private member
-        (viewModel as any)._totalSeconds = 3;
+        (viewModel as any)._syncFromModel();
 
         viewModel.start();
         expect(viewModel.state).toBe('RUNNING');
@@ -521,9 +541,13 @@ describe('TimerViewModel', () => {
 
         // Set to 3 seconds for quick test
         // biome-ignore lint/suspicious/noExplicitAny: test helper to access private member
-        (viewModel as any)._remainingSeconds = 3;
+        (viewModel as any)._model = {
+          ...(viewModel as any)._model,
+          remainingSeconds: 3,
+          totalSeconds: 3,
+        };
         // biome-ignore lint/suspicious/noExplicitAny: test helper to access private member
-        (viewModel as any)._totalSeconds = 3;
+        (viewModel as any)._syncFromModel();
 
         viewModel.start();
 
@@ -591,15 +615,18 @@ describe('TimerViewModel', () => {
       it('Settings change during run should apply after transition', () => {
         // Set to 2 seconds for quick test
         // biome-ignore lint/suspicious/noExplicitAny: test helper to access private member
-        (viewModel as any)._remainingSeconds = 2;
+        (viewModel as any)._model = {
+          ...(viewModel as any)._model,
+          remainingSeconds: 2,
+          totalSeconds: 2,
+        };
         // biome-ignore lint/suspicious/noExplicitAny: test helper to access private member
-        (viewModel as any)._totalSeconds = 2;
+        (viewModel as any)._syncFromModel();
 
         viewModel.start();
 
         // Update settings while running
-        const newSettings = TimerSettingsSchema.parse({ workDuration: 10, restDuration: 3 });
-        viewModel.updateSettings(newSettings);
+        viewModel.updateSettings({ workDuration: 10, restDuration: 3 });
 
         // Tick to completion
         timerService.tick(1);
@@ -613,8 +640,7 @@ describe('TimerViewModel', () => {
 
     describe('Edge Cases', () => {
       it('Should handle 1-minute work duration', () => {
-        const settings = TimerSettingsSchema.parse({ workDuration: 1, restDuration: 1 });
-        viewModel.updateSettings(settings);
+        viewModel.updateSettings({ workDuration: 1, restDuration: 1 });
 
         expect(viewModel.remainingSeconds).toBe(60);
 
@@ -647,9 +673,13 @@ describe('TimerViewModel', () => {
         for (let cycle = 0; cycle < 3; cycle++) {
           // Set short duration for testing
           // biome-ignore lint/suspicious/noExplicitAny: test helper to access private member
-          (viewModel as any)._remainingSeconds = 2;
+          (viewModel as any)._model = {
+            ...(viewModel as any)._model,
+            remainingSeconds: 2,
+            totalSeconds: 2,
+          };
           // biome-ignore lint/suspicious/noExplicitAny: test helper to access private member
-          (viewModel as any)._totalSeconds = 2;
+          (viewModel as any)._syncFromModel();
 
           viewModel.start();
 
