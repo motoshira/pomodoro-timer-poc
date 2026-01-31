@@ -1,4 +1,4 @@
-import { TimerSettingsSchema } from '../../src/models/TimerSettings';
+import { createDefaultSettings, updateSettings } from '../../src/models/TimerSettings';
 import { createTimerViewModel, type TimerViewModel } from '../../src/viewModels/TimerViewModel';
 import { FakeTimerService } from '../services/FakeTimerService';
 import { MockSettingsStorage } from '../services/MockSettingsStorage';
@@ -38,8 +38,11 @@ describe('TimerViewModel', () => {
     it('Should load settings from storage', () => {
       // Create new storage with custom settings
       const customStorage = new MockSettingsStorage();
-      const customSettings = TimerSettingsSchema.parse({ workDuration: 30, restDuration: 10 });
-      customStorage.save(customSettings);
+      const defaultSettings = createDefaultSettings();
+      const customSettings = updateSettings(defaultSettings, { workDuration: 30, restDuration: 10 });
+      if (customSettings) {
+        customStorage.save(customSettings);
+      }
 
       // Create new ViewModel with custom storage
       const customViewModel = createTimerViewModel(timerService, customStorage);
@@ -427,18 +430,14 @@ describe('TimerViewModel', () => {
 
   describe('updateSettings() Method', () => {
     it('Should update internal settings', () => {
-      const newSettings = TimerSettingsSchema.parse({ workDuration: 30, restDuration: 10 });
-
-      viewModel.updateSettings(newSettings);
+      viewModel.updateSettings({ workDuration: 30, restDuration: 10 });
 
       expect(viewModel.settings.workDuration).toBe(30);
       expect(viewModel.settings.restDuration).toBe(10);
     });
 
     it('Should persist to storage', () => {
-      const newSettings = TimerSettingsSchema.parse({ workDuration: 30, restDuration: 10 });
-
-      viewModel.updateSettings(newSettings);
+      viewModel.updateSettings({ workDuration: 30, restDuration: 10 });
 
       const loadedSettings = storage.load();
       expect(loadedSettings.workDuration).toBe(30);
@@ -449,8 +448,7 @@ describe('TimerViewModel', () => {
       expect(viewModel.state).toBe('STOPPED');
       expect(viewModel.currentMode).toBe('WORK');
 
-      const newSettings = TimerSettingsSchema.parse({ workDuration: 30, restDuration: 10 });
-      viewModel.updateSettings(newSettings);
+      viewModel.updateSettings({ workDuration: 30, restDuration: 10 });
 
       // Should apply new work duration
       expect(viewModel.remainingSeconds).toBe(30 * 60);
@@ -461,8 +459,7 @@ describe('TimerViewModel', () => {
       expect(viewModel.state).toBe('STOPPED');
       expect(viewModel.currentMode).toBe('REST');
 
-      const newSettings = TimerSettingsSchema.parse({ workDuration: 30, restDuration: 10 });
-      viewModel.updateSettings(newSettings);
+      viewModel.updateSettings({ workDuration: 30, restDuration: 10 });
 
       // Should apply new rest duration
       expect(viewModel.remainingSeconds).toBe(10 * 60);
@@ -472,8 +469,7 @@ describe('TimerViewModel', () => {
       viewModel.start();
       const initialSeconds = viewModel.remainingSeconds;
 
-      const newSettings = TimerSettingsSchema.parse({ workDuration: 30, restDuration: 10 });
-      viewModel.updateSettings(newSettings);
+      viewModel.updateSettings({ workDuration: 30, restDuration: 10 });
 
       // Should NOT change remainingSeconds while running
       expect(viewModel.remainingSeconds).toBe(initialSeconds);
@@ -494,8 +490,7 @@ describe('TimerViewModel', () => {
       (viewModel as any)._syncFromModel();
       viewModel.start();
 
-      const newSettings = TimerSettingsSchema.parse({ workDuration: 30, restDuration: 10 });
-      viewModel.updateSettings(newSettings);
+      viewModel.updateSettings({ workDuration: 30, restDuration: 10 });
 
       // Complete the cycle (tick to 0, will transition to REST)
       timerService.tick(1);
@@ -628,8 +623,7 @@ describe('TimerViewModel', () => {
         viewModel.start();
 
         // Update settings while running
-        const newSettings = TimerSettingsSchema.parse({ workDuration: 10, restDuration: 3 });
-        viewModel.updateSettings(newSettings);
+        viewModel.updateSettings({ workDuration: 10, restDuration: 3 });
 
         // Tick to completion
         timerService.tick(1);
@@ -643,8 +637,7 @@ describe('TimerViewModel', () => {
 
     describe('Edge Cases', () => {
       it('Should handle 1-minute work duration', () => {
-        const settings = TimerSettingsSchema.parse({ workDuration: 1, restDuration: 1 });
-        viewModel.updateSettings(settings);
+        viewModel.updateSettings({ workDuration: 1, restDuration: 1 });
 
         expect(viewModel.remainingSeconds).toBe(60);
 

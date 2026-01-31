@@ -9,7 +9,7 @@ import {
   tick as tickModel,
   transitionToNextMode,
 } from '../models/TimerModel';
-import type { TimerSettings } from '../models/TimerSettings';
+import { updateSettings as updateSettingsModel, type TimerSettings } from '../models/TimerSettings';
 import type { TimerState } from '../models/TimerState';
 import type { ISettingsStorage } from '../services/ISettingsStorage';
 import type { ITimerService } from '../services/ITimerService';
@@ -177,8 +177,14 @@ class _TimerViewModel extends GObject.Object {
     this.notify('display-time');
   }
 
-  updateSettings(settings: TimerSettings): void {
-    this._settings = { ...settings };
+  updateSettings(updates: Partial<{ workDuration: number; restDuration: number }>): void {
+    const newSettings = updateSettingsModel(this._settings, updates);
+    if (newSettings === null) {
+      // Validation failed - do nothing
+      return;
+    }
+
+    this._settings = newSettings;
 
     // Persist to storage
     this.storage.save(this._settings);
@@ -186,7 +192,7 @@ class _TimerViewModel extends GObject.Object {
     // If stopped, apply new duration to current mode
     if (this._state === 'STOPPED') {
       const durationMinutes =
-        this._currentMode === 'WORK' ? settings.workDuration : settings.restDuration;
+        this._currentMode === 'WORK' ? this._settings.workDuration : this._settings.restDuration;
       const totalSeconds = durationMinutes * 60;
 
       this._model = {
