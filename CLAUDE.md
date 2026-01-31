@@ -52,3 +52,21 @@ tsc --watch
 4. Run the application main loop
 
 **Pomodoro Timer Logic**: Implement timer state management (work/break cycles), notifications, and UI updates. Consider using GLib.timeout_add for timer intervals rather than JavaScript's setTimeout/setInterval for better GTK integration.
+
+### MVVM Pattern
+
+This project follows the MVVM (Model-View-ViewModel) architecture pattern:
+
+**Model**: Define models using Zod schemas and generate pure TypeScript records from those schemas. Models should be placed in `src/models/`.
+
+**ViewModel**: Implement ViewModels as GObject classes to enable property binding with GTK. ViewModels should be placed in `src/viewModels/`.
+
+**View**: Define views using `.ui` template files (GTK's XML-based UI definition format). Views should be placed in `src/view/`.
+
+**Directory Structure**:
+```
+src/
+├── models/      # Zod schemas and TypeScript types
+├── viewModels/  # GObject-based ViewModels
+└── view/        # GTK .ui template files
+```
