@@ -6,11 +6,7 @@ export class GLibTimerService implements ITimerService {
     // GLib.timeout_add_seconds expects interval in seconds
     const intervalSeconds = Math.max(1, Math.round(intervalMs / 1000));
 
-    return GLib.timeout_add_seconds(
-      GLib.PRIORITY_DEFAULT,
-      intervalSeconds,
-      callback
-    );
+    return GLib.timeout_add_seconds(GLib.PRIORITY_DEFAULT, intervalSeconds, callback);
   }
 
   stopTimer(timerId: number): void {
