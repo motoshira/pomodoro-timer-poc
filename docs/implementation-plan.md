@@ -1475,7 +1475,7 @@ export const MainWindow = GObject.registerClass({
   npm run build
   ```
 
-- [ ] **5.6.3** Test run the application
+- [x] **5.6.3** Test run the application
   ```bash
   gjs -m dist/main.js
   ```
@@ -1496,18 +1496,18 @@ export const MainWindow = GObject.registerClass({
 Refer to `docs/testing-strategy.md` for the complete manual testing checklist.
 
 **MainWindow Testing:**
-- [ ] Window opens with correct initial state
-- [ ] Timer starts and counts down correctly
-- [ ] Start/Stop button toggles properly
-- [ ] Skip button works correctly
-- [ ] Reset button works correctly
-- [ ] Settings button opens dialog
-- [ ] Mode transitions work (WORK ↔ REST)
-- [ ] Display updates correctly (time, mode label, icon)
+- [x] Window opens with correct initial state
+- [x] Timer starts and counts down correctly
+- [x] Start/Stop button toggles properly
+- [x] Skip button works correctly
+- [x] Reset button works correctly
+- [x] Settings button opens dialog
+- [x] Mode transitions work (WORK ↔ REST)
+- [x] Display updates correctly (time, mode label, icon)
 
 **SettingsDialog Testing:**
-- [ ] Dialog opens with current settings
-- [ ] Input validation works (SpinButton constraints)
+- [x] Dialog opens with current settings
+- [x] Input validation works (SpinButton constraints)
 - [ ] Save applies changes correctly
 - [ ] Cancel discards changes
 - [ ] hasChanges detection works
@@ -1522,6 +1522,9 @@ Refer to `docs/testing-strategy.md` for the complete manual testing checklist.
   - Fix the implementation
   - Verify test passes
   - Commit with descriptive message referencing the bug
+
+  - SettingsDialog
+    - [ ] Save/Cancel buttons does not appear
 
 - [ ] **6.2.3** Re-run all tests after fixes
   ```bash
