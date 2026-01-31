@@ -20,8 +20,6 @@ class _TimerViewModel extends GObject.Object {
   private _remainingSeconds!: number;
   private _currentMode!: TimerMode;
   private _state!: TimerState;
-  /** @deprecated */
-  private _totalSeconds!: number;
   private _settings!: TimerSettings;
   private _timerId: number | null = null;
   private timerService!: ITimerService;
@@ -44,7 +42,6 @@ class _TimerViewModel extends GObject.Object {
     this._remainingSeconds = this._model.remainingSeconds;
     this._currentMode = this._model.currentMode;
     this._state = this._model.state;
-    this._totalSeconds = this._model.totalSeconds;
   }
 
   // Getters for GObject properties
