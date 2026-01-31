@@ -1083,13 +1083,13 @@ TOTAL: 25+ tests for SettingsViewModel
 
 **Steps:**
 
-- [ ] **4.2.1** Create `src/view/SettingsDialog.ui` with GTK4 dialog template
+- [x] **4.2.1** Create `src/view/SettingsDialog.ui` with GTK4 dialog template
   - Define GtkDialog
   - Add SpinButtons for work/rest durations
   - Add Save/Cancel buttons
   - Assign widget IDs for binding
 
-- [ ] **4.2.2** Commit changes
+- [x] **4.2.2** Commit changes
   ```bash
   git add src/view/SettingsDialog.ui
   git commit -m "Add SettingsDialog UI template (GTK4)"
