@@ -405,7 +405,7 @@ FakeTimerService
 
 **Steps:**
 
-- [ ] **3.1.1** Create test file structure `test/viewModels/TimerViewModel.spec.ts`
+- [x] **3.1.1** Create test file structure `test/viewModels/TimerViewModel.spec.ts`
   - Set up test suite with beforeEach
   - Create instances of FakeTimerService and MockSettingsStorage
   - Write ONLY initialization tests first:
@@ -415,7 +415,7 @@ FakeTimerService
     - Should load settings from storage
   - Run `npm test` → should FAIL
 
-- [ ] **3.1.2** Implement basic `src/viewModels/TimerViewModel.ts` structure
+- [x] **3.1.2** Implement basic `src/viewModels/TimerViewModel.ts` structure
   ```typescript
   // Note: This is a simplified skeleton. Full GObject implementation needed.
   import type { ITimerService } from '../services/ITimerService';
@@ -461,7 +461,7 @@ FakeTimerService
   ```
   - Run `npm test` → initialization tests should PASS
 
-- [ ] **3.1.3** Commit changes
+- [x] **3.1.3** Commit changes
   ```bash
   git add src/viewModels/TimerViewModel.ts test/viewModels/TimerViewModel.spec.ts
   git commit -m "Add TimerViewModel basic structure with initialization"
@@ -473,14 +473,14 @@ FakeTimerService
 
 **Steps:**
 
-- [ ] **3.2.1** Add tests for computed properties
+- [x] **3.2.1** Add tests for computed properties
   - `displayTime` formatting tests (25:00, 01:30, 00:00)
   - `modeLabel` tests (WORK → "Work", REST → "Rest")
   - `modeIcon` tests (correct icon names)
   - `startStopLabel` tests (STOPPED → "Start", RUNNING → "Stop")
   - Run `npm test` → new tests should FAIL
 
-- [ ] **3.2.2** Implement computed properties in `TimerViewModel.ts`
+- [x] **3.2.2** Implement computed properties in `TimerViewModel.ts`
   ```typescript
   get displayTime(): string {
     const minutes = Math.floor(this._remainingSeconds / 60);
@@ -508,7 +508,7 @@ FakeTimerService
   ```
   - Run `npm test` → computed property tests should PASS
 
-- [ ] **3.2.3** Commit changes
+- [x] **3.2.3** Commit changes
   ```bash
   git add src/viewModels/TimerViewModel.ts test/viewModels/TimerViewModel.spec.ts
   git commit -m "Add computed properties to TimerViewModel"
@@ -520,14 +520,14 @@ FakeTimerService
 
 **Steps:**
 
-- [ ] **3.3.1** Add tests for start() method
+- [x] **3.3.1** Add tests for start() method
   - Should change state to RUNNING
   - Should start timer via TimerService
   - Should do nothing if already RUNNING
   - Should emit state property notification (placeholder for GObject)
   - Run `npm test` → should FAIL
 
-- [ ] **3.3.2** Implement start() method
+- [x] **3.3.2** Implement start() method
   ```typescript
   start(): void {
     if (this._state === TimerState.RUNNING) return;
@@ -541,13 +541,13 @@ FakeTimerService
   }
   ```
 
-- [ ] **3.3.3** Add tests for stop() method
+- [x] **3.3.3** Add tests for stop() method
   - Should change state to STOPPED
   - Should stop timer via TimerService
   - Should do nothing if already STOPPED
   - Run `npm test` → should FAIL
 
-- [ ] **3.3.4** Implement stop() method
+- [x] **3.3.4** Implement stop() method
   ```typescript
   stop(): void {
     if (this._state === TimerState.STOPPED) return;
@@ -562,7 +562,7 @@ FakeTimerService
   ```
   - Run `npm test` → start/stop tests should PASS
 
-- [ ] **3.3.5** Commit changes
+- [x] **3.3.5** Commit changes
   ```bash
   git add src/viewModels/TimerViewModel.ts test/viewModels/TimerViewModel.spec.ts
   git commit -m "Add start() and stop() methods to TimerViewModel"
@@ -574,14 +574,14 @@ FakeTimerService
 
 **Steps:**
 
-- [ ] **3.4.1** Add tests for _tick() behavior
+- [x] **3.4.1** Add tests for _tick() behavior
   - Should decrement remainingSeconds by 1
   - Should return true when > 0
   - Should return false when reaching 0
   - Should call _transitionToNextMode() when reaching 0 (stub it first)
   - Run `npm test` → should FAIL
 
-- [ ] **3.4.2** Implement _tick() method
+- [x] **3.4.2** Implement _tick() method
   ```typescript
   private _tick(): boolean {
     if (this._remainingSeconds > 0) {
@@ -596,7 +596,7 @@ FakeTimerService
   }
   ```
 
-- [ ] **3.4.3** Add stub for _transitionToNextMode() (to be implemented next)
+- [x] **3.4.3** Add stub for _transitionToNextMode() (to be implemented next)
   ```typescript
   private _transitionToNextMode(): void {
     // TODO: Implement in next step
@@ -604,7 +604,7 @@ FakeTimerService
   ```
   - Run `npm test` → tick tests should PASS
 
-- [ ] **3.4.4** Commit changes
+- [x] **3.4.4** Commit changes
   ```bash
   git add src/viewModels/TimerViewModel.ts test/viewModels/TimerViewModel.spec.ts
   git commit -m "Add _tick() countdown logic to TimerViewModel"
@@ -616,14 +616,14 @@ FakeTimerService
 
 **Steps:**
 
-- [ ] **3.5.1** Add tests for _transitionToNextMode()
+- [x] **3.5.1** Add tests for _transitionToNextMode()
   - WORK → REST transition
   - REST → WORK transition
   - Should set state to STOPPED
   - Should set remainingSeconds to new mode's duration
   - Run `npm test` → should FAIL
 
-- [ ] **3.5.2** Implement _transitionToNextMode()
+- [x] **3.5.2** Implement _transitionToNextMode()
   ```typescript
   private _transitionToNextMode(): void {
     // Switch mode
@@ -651,7 +651,7 @@ FakeTimerService
   ```
   - Run `npm test` → mode transition tests should PASS
 
-- [ ] **3.5.3** Commit changes
+- [x] **3.5.3** Commit changes
   ```bash
   git add src/viewModels/TimerViewModel.ts test/viewModels/TimerViewModel.spec.ts
   git commit -m "Add mode transition logic to TimerViewModel"
@@ -663,13 +663,13 @@ FakeTimerService
 
 **Steps:**
 
-- [ ] **3.6.1** Add tests for skip() method
+- [x] **3.6.1** Add tests for skip() method
   - Should transition to next mode
   - Should set state to STOPPED
   - Should stop running timer if active
   - Run `npm test` → should FAIL
 
-- [ ] **3.6.2** Implement skip() method
+- [x] **3.6.2** Implement skip() method
   ```typescript
   skip(): void {
     // Stop timer if running
@@ -682,14 +682,14 @@ FakeTimerService
   }
   ```
 
-- [ ] **3.6.3** Add tests for reset() method
+- [x] **3.6.3** Add tests for reset() method
   - Should reset remainingSeconds to totalSeconds
   - Should set state to STOPPED
   - Should keep current mode unchanged
   - Should stop running timer if active
   - Run `npm test` → should FAIL
 
-- [ ] **3.6.4** Implement reset() method
+- [x] **3.6.4** Implement reset() method
   ```typescript
   reset(): void {
     // Stop timer if running
@@ -706,7 +706,7 @@ FakeTimerService
   ```
   - Run `npm test` → skip/reset tests should PASS
 
-- [ ] **3.6.5** Commit changes
+- [x] **3.6.5** Commit changes
   ```bash
   git add src/viewModels/TimerViewModel.ts test/viewModels/TimerViewModel.spec.ts
   git commit -m "Add skip() and reset() methods to TimerViewModel"
@@ -718,14 +718,14 @@ FakeTimerService
 
 **Steps:**
 
-- [ ] **3.7.1** Add tests for updateSettings()
+- [x] **3.7.1** Add tests for updateSettings()
   - Should update internal settings
   - Should persist to storage
   - Should reset timer if in STOPPED state
   - Should not affect running timer until next cycle
   - Run `npm test` → should FAIL
 
-- [ ] **3.7.2** Implement updateSettings() method
+- [x] **3.7.2** Implement updateSettings() method
   ```typescript
   updateSettings(settings: TimerSettings): void {
     this._settings = { ...settings };
@@ -742,7 +742,7 @@ FakeTimerService
   ```
   - Run `npm test` → updateSettings tests should PASS
 
-- [ ] **3.7.3** Commit changes
+- [x] **3.7.3** Commit changes
   ```bash
   git add src/viewModels/TimerViewModel.ts test/viewModels/TimerViewModel.spec.ts
   git commit -m "Add updateSettings() method to TimerViewModel"
@@ -754,7 +754,7 @@ FakeTimerService
 
 **Steps:**
 
-- [ ] **3.8.1** Add integration tests for complete workflows
+- [x] **3.8.1** Add integration tests for complete workflows
   - Full work cycle: start → tick to 0 → auto transition to REST
   - Full rest cycle: REST → tick to 0 → auto transition to WORK
   - Start/stop/skip/reset combinations
@@ -762,10 +762,10 @@ FakeTimerService
   - Edge cases (1-minute durations, rapid operations)
   - Run `npm test` → should PASS
 
-- [ ] **3.8.2** Fix any issues found during integration tests
+- [x] **3.8.2** Fix any issues found during integration tests
   - Run `npm test` → all TimerViewModel tests should PASS
 
-- [ ] **3.8.3** Commit changes
+- [x] **3.8.3** Commit changes
   ```bash
   git add test/viewModels/TimerViewModel.spec.ts
   git commit -m "Add integration tests for TimerViewModel"
@@ -813,12 +813,12 @@ TOTAL: 40+ tests for TimerViewModel
 
 **Steps:**
 
-- [ ] **3.9.1** Create test file `test/viewModels/SettingsViewModel.spec.ts`
+- [x] **3.9.1** Create test file `test/viewModels/SettingsViewModel.spec.ts`
   - Write tests for all categories (see testing-strategy.md)
   - Initialization, load(), property changes, save(), cancel(), validation
   - Run `npm test` → should FAIL
 
-- [ ] **3.9.2** Implement `src/viewModels/SettingsViewModel.ts`
+- [x] **3.9.2** Implement `src/viewModels/SettingsViewModel.ts`
   ```typescript
   import { TimerSettings, TimerSettingsSchema } from '../models/TimerSettings';
 
@@ -909,7 +909,7 @@ TOTAL: 40+ tests for TimerViewModel
   ```
   - Run `npm test` → should PASS
 
-- [ ] **3.9.3** Commit changes
+- [x] **3.9.3** Commit changes
   ```bash
   git add src/viewModels/SettingsViewModel.ts test/viewModels/SettingsViewModel.spec.ts
   git commit -m "Add SettingsViewModel with validation and dirty tracking"
