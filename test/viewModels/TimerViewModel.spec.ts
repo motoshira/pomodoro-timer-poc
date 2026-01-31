@@ -1,6 +1,4 @@
-import type { TimerMode } from '../../src/models/TimerMode';
 import { TimerSettingsSchema } from '../../src/models/TimerSettings';
-import type { TimerState } from '../../src/models/TimerState';
 import { createTimerViewModel, type TimerViewModel } from '../../src/viewModels/TimerViewModel';
 import { FakeTimerService } from '../services/FakeTimerService';
 import { MockSettingsStorage } from '../services/MockSettingsStorage';
