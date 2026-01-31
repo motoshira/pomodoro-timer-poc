@@ -1,5 +1,6 @@
 {
   "spec_files": [
-    "dist/spec-bundled"
+    "dist/spec-bundled",
+    "dist/test-bundled"
   ]
 }
