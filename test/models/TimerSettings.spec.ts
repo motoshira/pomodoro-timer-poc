@@ -7,32 +7,38 @@ import {
 describe('TimerSettings', () => {
   describe('Valid Input', () => {
     it('Should validate valid settings (workDuration: 25, restDuration: 5)', () => {
-      const settings: TimerSettings = {
+      const input = {
         workDuration: 25,
         restDuration: 5,
       };
 
-      const result = TimerSettingsSchema.safeParse(settings);
+      const result = TimerSettingsSchema.safeParse(input);
       expect(result.success).toBe(true);
+      if (result.success) {
+        // Verify the parsed data is a branded TimerSettings type
+        const settings: TimerSettings = result.data;
+        expect(settings.workDuration).toBe(25);
+        expect(settings.restDuration).toBe(5);
+      }
     });
 
     it('Should accept positive integers for durations', () => {
-      const settings: TimerSettings = {
+      const input = {
         workDuration: 1,
         restDuration: 1,
       };
 
-      const result = TimerSettingsSchema.safeParse(settings);
+      const result = TimerSettingsSchema.safeParse(input);
       expect(result.success).toBe(true);
     });
 
     it('Should accept large values (workDuration: 120, restDuration: 60)', () => {
-      const settings: TimerSettings = {
+      const input = {
         workDuration: 120,
         restDuration: 60,
       };
 
-      const result = TimerSettingsSchema.safeParse(settings);
+      const result = TimerSettingsSchema.safeParse(input);
       expect(result.success).toBe(true);
     });
   });

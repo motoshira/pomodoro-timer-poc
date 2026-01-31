@@ -5,74 +5,79 @@ import { TimerState } from '../../src/models/TimerState';
 describe('TimerModel', () => {
   describe('Valid Input', () => {
     it('Should validate valid model state', () => {
-      const model: TimerModel = {
+      const input = {
         remainingSeconds: 1500,
         currentMode: TimerMode.WORK,
         state: TimerState.STOPPED,
         totalSeconds: 1500,
       };
 
-      const result = TimerModelSchema.safeParse(model);
+      const result = TimerModelSchema.safeParse(input);
       expect(result.success).toBe(true);
+      if (result.success) {
+        // Verify the parsed data is a branded TimerModel type
+        const model: TimerModel = result.data;
+        expect(model.remainingSeconds).toBe(1500);
+      }
     });
 
     it('Should accept remainingSeconds = 0 (nonnegative)', () => {
-      const model: TimerModel = {
+      const input = {
         remainingSeconds: 0,
         currentMode: TimerMode.WORK,
         state: TimerState.STOPPED,
         totalSeconds: 1500,
       };
 
-      const result = TimerModelSchema.safeParse(model);
+      const result = TimerModelSchema.safeParse(input);
       expect(result.success).toBe(true);
     });
 
     it('Should accept WORK mode', () => {
-      const model: TimerModel = {
+      const input = {
         remainingSeconds: 1500,
         currentMode: TimerMode.WORK,
         state: TimerState.STOPPED,
         totalSeconds: 1500,
       };
 
-      const result = TimerModelSchema.safeParse(model);
+      const result = TimerModelSchema.safeParse(input);
       expect(result.success).toBe(true);
     });
 
     it('Should accept REST mode', () => {
-      const model: TimerModel = {
+      const input = {
         remainingSeconds: 300,
         currentMode: TimerMode.REST,
         state: TimerState.STOPPED,
         totalSeconds: 300,
       };
 
-      const result = TimerModelSchema.safeParse(model);
+      const result = TimerModelSchema.safeParse(input);
       expect(result.success).toBe(true);
     });
 
     it('Should accept RUNNING state', () => {
-      const model: TimerModel = {
+      const input = {
         remainingSeconds: 1500,
         currentMode: TimerMode.WORK,
         state: TimerState.RUNNING,
         totalSeconds: 1500,
       };
 
-      const result = TimerModelSchema.safeParse(model);
+      const result = TimerModelSchema.safeParse(input);
       expect(result.success).toBe(true);
     });
 
     it('Should accept STOPPED state', () => {
-      const model: TimerModel = {
+      const input = {
         remainingSeconds: 1500,
         currentMode: TimerMode.WORK,
         state: TimerState.STOPPED,
         totalSeconds: 1500,
       };
 
-      const result = TimerModelSchema.safeParse(model);
+      const result = TimerModelSchema.safeParse(input);
       expect(result.success).toBe(true);
     });
   });
