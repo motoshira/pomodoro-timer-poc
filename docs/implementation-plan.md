@@ -956,16 +956,16 @@ TOTAL: 25+ tests for SettingsViewModel
 
 **Steps:**
 
-- [ ] **4.1.1** Create `src/view/MainWindow.ui` with GTK4 template structure
+- [x] **4.1.1** Create `src/view/MainWindow.ui` with GTK4 template structure
   - Define GtkApplicationWindow
   - Add vertical box layout
   - Add timer display section (modeIcon, timeLabel, modeLabel)
   - Add button controls (startStop, skip, reset, settings)
   - Assign widget IDs for binding
 
-- [ ] **4.1.2** Document widget IDs and expected bindings in comments
+- [x] **4.1.2** Document widget IDs and expected bindings in comments
 
-- [ ] **4.1.3** Commit changes
+- [x] **4.1.3** Commit changes
   ```bash
   git add src/view/MainWindow.ui
   git commit -m "Add MainWindow UI template (GTK4)"
