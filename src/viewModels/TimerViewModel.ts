@@ -15,7 +15,7 @@ const TimerViewModelClass = GObject.registerClass(
         'Current remaining time in seconds',
         GObject.ParamFlags.READABLE,
         0,
-        Number.MAX_SAFE_INTEGER,
+        2147483647, // G_MAXINT32
         0,
       ),
       'current-mode': GObject.ParamSpec.string(
@@ -72,8 +72,11 @@ const TimerViewModelClass = GObject.registerClass(
     private timerService!: ITimerService;
     private storage!: ISettingsStorage;
 
-    _init(timerService: ITimerService, storage: ISettingsStorage) {
-      super._init();
+    _init(params?: Partial<GObject.Object.ConstructorProps>) {
+      super._init(params);
+    }
+
+    initialize(timerService: ITimerService, storage: ISettingsStorage): void {
       this.timerService = timerService;
       this.storage = storage;
       this._settings = storage.load();
@@ -244,7 +247,7 @@ export function createTimerViewModel(
   storage: ISettingsStorage,
 ): TimerViewModel {
   const vm = new TimerViewModelClass();
-  vm._init(timerService, storage);
+  vm.initialize(timerService, storage);
   return vm;
 }
 

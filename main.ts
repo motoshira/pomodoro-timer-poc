@@ -1,6 +1,6 @@
 import Gio from 'gi://Gio?version=2.0';
-import Gtk from 'gi://Gtk?version=4.0';
 import GLib from 'gi://GLib';
+import Gtk from 'gi://Gtk?version=4.0';
 import { GLibTimerService } from './src/services/GLibTimerService';
 import { MainWindow } from './src/view/MainWindow';
 import { createTimerViewModel } from './src/viewModels/TimerViewModel';

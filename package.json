@@ -11,8 +11,7 @@
     "typecheck": "tsc --noEmit",
     "dev": "tsc --watch",
     "lint": "biome check --write",
-    "bundle:tests": "node scripts/bundle-tests.js",
-    "test": "npm run build && npm run bundle:tests && jasmine",
+    "test": "npm run build:ts && esbuild test/index.ts --bundle --format=esm --platform=neutral --external:gi://* --outfile=dist/test-bundle.js && jasmine --module dist/test-bundle.js",
     "test:watch": "jasmine --watch",
     "ui:validate": "sh -c 'for file in src/view/*.ui; do gtk4-builder-tool validate \"$file\" || exit 1; done'",
     "ui:simplify": "sh -c 'for file in src/view/*.ui; do gtk4-builder-tool simplify --replace \"$file\" || exit 1; done'"
