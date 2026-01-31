@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interface>
+  <template class="PomodoroMainWindow" parent="GtkApplicationWindow">
+    <property name="title">Pomodoro Timer</property>
+    <property name="default-width">400</property>
+    <property name="default-height">300</property>
+    <child>
+      <object class="GtkBox">
+        <property name="orientation">vertical</property>
+        <property name="spacing">12</property>
+        <property name="margin-top">24</property>
+        <property name="margin-bottom">24</property>
+        <property name="margin-start">24</property>
+        <property name="margin-end">24</property>
+        <child>
+          <object class="GtkBox" id="displayArea">
+            <property name="orientation">vertical</property>
+            <property name="spacing">8</property>
+            <property name="halign">center</property>
+            <property name="valign">center</property>
+            <property name="vexpand">1</property>
+            <child>
+              <object class="GtkImage" id="modeIcon">
+                <property name="icon-name">preferences-system-time-symbolic</property>
+                <property name="pixel-size">64</property>
+              </object>
+            </child>
+            <child>
+              <object class="GtkLabel" id="timeLabel">
+                <property name="label">25:00</property>
+                <style>
+                  <class name="title-1"/>
+                </style>
+              </object>
+            </child>
+            <child>
+              <object class="GtkLabel" id="modeLabel">
+                <property name="label">Work</property>
+                <style>
+                  <class name="title-3"/>
+                </style>
+              </object>
+            </child>
+          </object>
+        </child>
+        <child>
+          <object class="GtkBox" id="controlArea">
+            <property name="spacing">8</property>
+            <property name="halign">center</property>
+            <property name="homogeneous">1</property>
+            <child>
+              <object class="GtkButton" id="startStopButton">
+                <property name="label">Start</property>
+                <style>
+                  <class name="suggested-action"/>
+                </style>
+              </object>
+            </child>
+            <child>
+              <object class="GtkButton" id="skipButton">
+                <property name="label">Skip</property>
+              </object>
+            </child>
+            <child>
+              <object class="GtkButton" id="resetButton">
+                <property name="label">Reset</property>
+              </object>
+            </child>
+          </object>
+        </child>
+        <child>
+          <object class="GtkButton" id="settingsButton">
+            <property name="label">Settings</property>
+            <property name="halign">end</property>
+          </object>
+        </child>
+      </object>
+    </child>
+  </template>
+</interface>
