@@ -104,6 +104,9 @@ export class TimerViewModel {
     // Set to stopped state
     this._state = 'STOPPED';
 
+    // Clear timer ID (timer already stopped by returning false from _tick)
+    this._timerId = null;
+
     // Reset timer for new mode
     this._resetToCurrentMode();
 

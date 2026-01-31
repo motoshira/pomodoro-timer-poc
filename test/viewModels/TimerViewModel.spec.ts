@@ -470,4 +470,175 @@ describe('TimerViewModel', () => {
       expect(viewModel.remainingSeconds).toBe(10 * 60); // New rest duration
     });
   });
+
+  describe('Integration Tests', () => {
+    describe('Full Cycles', () => {
+      it('Full work cycle: start → tick to 0 → auto transition to REST', () => {
+        // Set to 3 seconds for quick test
+        (viewModel as any)._remainingSeconds = 3;
+        (viewModel as any)._totalSeconds = 3;
+
+        viewModel.start();
+        expect(viewModel.state).toBe('RUNNING');
+        expect(viewModel.currentMode).toBe('WORK');
+
+        // Tick down to 0
+        timerService.tick(1); // 2 seconds
+        expect(viewModel.remainingSeconds).toBe(2);
+        timerService.tick(1); // 1 second
+        expect(viewModel.remainingSeconds).toBe(1);
+        timerService.tick(1); // 0 seconds - should transition
+
+        // Should auto-transition to REST and STOPPED
+        expect(viewModel.currentMode).toBe('REST');
+        expect(viewModel.state).toBe('STOPPED');
+        expect(viewModel.remainingSeconds).toBe(5 * 60); // Default rest duration
+      });
+
+      it('Full rest cycle: REST → tick to 0 → auto transition to WORK', () => {
+        // Go to REST mode
+        viewModel.skip();
+        expect(viewModel.currentMode).toBe('REST');
+
+        // Set to 3 seconds for quick test
+        (viewModel as any)._remainingSeconds = 3;
+        (viewModel as any)._totalSeconds = 3;
+
+        viewModel.start();
+
+        // Tick down to 0
+        timerService.tick(1); // 2 seconds
+        timerService.tick(1); // 1 second
+        timerService.tick(1); // 0 seconds - should transition
+
+        // Should auto-transition to WORK and STOPPED
+        expect(viewModel.currentMode).toBe('WORK');
+        expect(viewModel.state).toBe('STOPPED');
+        expect(viewModel.remainingSeconds).toBe(25 * 60); // Default work duration
+      });
+    });
+
+    describe('Operation Combinations', () => {
+      it('Start/Stop/Start sequence', () => {
+        viewModel.start();
+        expect(viewModel.state).toBe('RUNNING');
+
+        timerService.tick(1); // First timer ID is 1
+        const remainingAfterTick = viewModel.remainingSeconds;
+
+        viewModel.stop();
+        expect(viewModel.state).toBe('STOPPED');
+        expect(viewModel.remainingSeconds).toBe(remainingAfterTick);
+
+        // Start again - should continue from where it stopped
+        viewModel.start(); // This creates a new timer with ID 2
+        expect(viewModel.state).toBe('RUNNING');
+        timerService.tick(2); // Use timer ID 2
+        expect(viewModel.remainingSeconds).toBe(remainingAfterTick - 1);
+      });
+
+      it('Skip while running should stop timer and transition', () => {
+        viewModel.start();
+        expect(viewModel.state).toBe('RUNNING');
+        expect(viewModel.currentMode).toBe('WORK');
+
+        timerService.tick(1);
+
+        viewModel.skip();
+
+        expect(viewModel.state).toBe('STOPPED');
+        expect(viewModel.currentMode).toBe('REST');
+        expect(timerService.getActiveCount()).toBe(0);
+      });
+
+      it('Reset while running should stop timer and restore duration', () => {
+        const initialSeconds = viewModel.remainingSeconds;
+
+        viewModel.start();
+        timerService.tick(1);
+        timerService.tick(1);
+
+        viewModel.reset();
+
+        expect(viewModel.state).toBe('STOPPED');
+        expect(viewModel.remainingSeconds).toBe(initialSeconds);
+        expect(timerService.getActiveCount()).toBe(0);
+      });
+    });
+
+    describe('Settings During Running Timer', () => {
+      it('Settings change during run should apply after transition', () => {
+        // Set to 2 seconds for quick test
+        (viewModel as any)._remainingSeconds = 2;
+        (viewModel as any)._totalSeconds = 2;
+
+        viewModel.start();
+
+        // Update settings while running
+        const newSettings = TimerSettingsSchema.parse({ workDuration: 10, restDuration: 3 });
+        viewModel.updateSettings(newSettings);
+
+        // Tick to completion
+        timerService.tick(1);
+        timerService.tick(1);
+
+        // Should transition to REST with NEW settings
+        expect(viewModel.currentMode).toBe('REST');
+        expect(viewModel.remainingSeconds).toBe(3 * 60); // New rest duration
+      });
+    });
+
+    describe('Edge Cases', () => {
+      it('Should handle 1-minute work duration', () => {
+        const settings = TimerSettingsSchema.parse({ workDuration: 1, restDuration: 1 });
+        viewModel.updateSettings(settings);
+
+        expect(viewModel.remainingSeconds).toBe(60);
+
+        viewModel.start();
+        for (let i = 0; i < 60; i++) {
+          timerService.tick(1);
+        }
+
+        // Should transition to REST
+        expect(viewModel.currentMode).toBe('REST');
+        expect(viewModel.remainingSeconds).toBe(60);
+      });
+
+      it('Rapid start/stop/skip/reset operations', () => {
+        viewModel.start();
+        viewModel.stop();
+        viewModel.start();
+        timerService.tick(1);
+        viewModel.skip();
+        viewModel.start();
+        viewModel.reset();
+
+        // Should end in valid state
+        expect(viewModel.state).toBe('STOPPED');
+        expect(viewModel.currentMode).toBe('REST');
+        expect(timerService.getActiveCount()).toBe(0);
+      });
+
+      it('Multiple complete cycles', () => {
+        for (let cycle = 0; cycle < 3; cycle++) {
+          // Set short duration for testing
+          (viewModel as any)._remainingSeconds = 2;
+          (viewModel as any)._totalSeconds = 2;
+
+          viewModel.start();
+
+          // Get the current timer ID (it increments with each start)
+          const currentTimerId = cycle + 1;
+          timerService.tick(currentTimerId);
+          timerService.tick(currentTimerId);
+
+          // After each cycle, mode should alternate
+          const expectedMode = cycle % 2 === 0 ? 'REST' : 'WORK';
+          expect(viewModel.currentMode).toBe(expectedMode);
+          expect(viewModel.state).toBe('STOPPED');
+        }
+      });
+    });
+  });
 });
