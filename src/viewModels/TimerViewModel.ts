@@ -1,5 +1,14 @@
 import GObject from 'gi://GObject';
 import type { TimerMode } from '../models/TimerMode';
+import {
+  createInitialModel,
+  reset as resetModel,
+  start as startModel,
+  stop as stopModel,
+  type TimerModel,
+  tick as tickModel,
+  transitionToNextMode,
+} from '../models/TimerModel';
 import type { TimerSettings } from '../models/TimerSettings';
 import type { TimerState } from '../models/TimerState';
 import type { ISettingsStorage } from '../services/ISettingsStorage';
@@ -63,6 +72,7 @@ const TimerViewModelClass = GObject.registerClass(
     },
   },
   class TimerViewModel extends GObject.Object {
+    private _model!: TimerModel;
     private _remainingSeconds!: number;
     private _currentMode!: TimerMode;
     private _state!: TimerState;
@@ -80,10 +90,16 @@ const TimerViewModelClass = GObject.registerClass(
       this.timerService = timerService;
       this.storage = storage;
       this._settings = storage.load();
-      this._currentMode = 'WORK';
-      this._state = 'STOPPED';
-      this._totalSeconds = this._settings.workDuration * 60;
-      this._remainingSeconds = this._totalSeconds;
+      this._model = createInitialModel(this._settings.workDuration);
+      this._syncFromModel();
+    }
+
+    // Sync GObject property fields from model
+    private _syncFromModel(): void {
+      this._remainingSeconds = this._model.remainingSeconds;
+      this._currentMode = this._model.currentMode;
+      this._state = this._model.state;
+      this._totalSeconds = this._model.totalSeconds;
     }
 
     // Getters for GObject properties
@@ -124,18 +140,22 @@ const TimerViewModelClass = GObject.registerClass(
     }
 
     start(): void {
-      if (this._state === 'RUNNING') return;
+      const { result, hasChanged } = startModel(this._model);
+      if (!hasChanged) return;
 
-      this._state = 'RUNNING';
+      this._model = result;
+      this._syncFromModel();
       this._timerId = this.timerService.startTimer(() => this._tick(), 1000);
       this.notify('state');
       this.notify('start-stop-label');
     }
 
     stop(): void {
-      if (this._state === 'STOPPED') return;
+      const { result, hasChanged } = stopModel(this._model);
+      if (!hasChanged) return;
 
-      this._state = 'STOPPED';
+      this._model = result;
+      this._syncFromModel();
       if (this._timerId !== null) {
         this.timerService.stopTimer(this._timerId);
         this._timerId = null;
@@ -146,7 +166,8 @@ const TimerViewModelClass = GObject.registerClass(
 
     private _tick(): boolean {
       if (this._remainingSeconds > 0) {
-        this._remainingSeconds--;
+        this._model = tickModel(this._model);
+        this._syncFromModel();
         this.notify('remaining-seconds');
         this.notify('display-time');
 
@@ -164,17 +185,16 @@ const TimerViewModelClass = GObject.registerClass(
     }
 
     private _transitionToNextMode(): void {
-      // Switch mode
-      this._currentMode = this._currentMode === 'WORK' ? 'REST' : 'WORK';
-
-      // Set to stopped state
-      this._state = 'STOPPED';
-
       // Clear timer ID (timer already stopped by returning false from _tick)
       this._timerId = null;
 
-      // Reset timer for new mode
-      this._resetToCurrentMode();
+      // Get next mode duration
+      const nextModeDurationMinutes =
+        this._currentMode === 'WORK' ? this._settings.restDuration : this._settings.workDuration;
+
+      // Transition to next mode
+      this._model = transitionToNextMode(this._model, nextModeDurationMinutes);
+      this._syncFromModel();
 
       // Emit property notifications
       this.notify('current-mode');
@@ -184,14 +204,6 @@ const TimerViewModelClass = GObject.registerClass(
       this.notify('start-stop-label');
       this.notify('remaining-seconds');
       this.notify('display-time');
-    }
-
-    private _resetToCurrentMode(): void {
-      const durationMinutes =
-        this._currentMode === 'WORK' ? this._settings.workDuration : this._settings.restDuration;
-
-      this._totalSeconds = durationMinutes * 60;
-      this._remainingSeconds = this._totalSeconds;
     }
 
     skip(): void {
@@ -211,8 +223,8 @@ const TimerViewModelClass = GObject.registerClass(
         this._timerId = null;
       }
 
-      this._state = 'STOPPED';
-      this._remainingSeconds = this._totalSeconds;
+      this._model = resetModel(this._model);
+      this._syncFromModel();
 
       // Emit property notifications
       this.notify('state');
@@ -229,7 +241,17 @@ const TimerViewModelClass = GObject.registerClass(
 
       // If stopped, apply new duration to current mode
       if (this._state === 'STOPPED') {
-        this._resetToCurrentMode();
+        const durationMinutes =
+          this._currentMode === 'WORK' ? settings.workDuration : settings.restDuration;
+        const totalSeconds = durationMinutes * 60;
+
+        this._model = {
+          ...this._model,
+          totalSeconds: totalSeconds,
+          remainingSeconds: totalSeconds,
+        };
+        this._syncFromModel();
+
         // Emit property notifications
         this.notify('remaining-seconds');
         this.notify('display-time');
