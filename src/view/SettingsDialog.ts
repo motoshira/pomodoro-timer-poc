@@ -53,10 +53,12 @@ export const SettingsDialog = GObject.registerClass(
 
       try {
         const settings = this._viewModel.save();
+
+        // Pass the settings via data property BEFORE emitting response
+        this._savedSettings = settings;
+
         // Signal that settings were saved successfully
         this.response(Gtk.ResponseType.OK);
-        // Pass the settings via data property
-        this._savedSettings = settings;
       } catch (error) {
         console.error('Failed to save settings:', error);
         const message = error instanceof Error ? error.message : 'Invalid settings values';

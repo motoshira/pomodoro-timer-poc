@@ -94,13 +94,14 @@ export const MainWindow = GObject.registerClass(
 
       // Create SettingsViewModel and Dialog
       const settingsViewModel = createSettingsViewModel();
+
+      // Load current settings BEFORE creating dialog
+      settingsViewModel.load(this._viewModel.settings);
+
       const dialog = new SettingsDialog({ transient_for: this, modal: true });
 
-      // Bind ViewModel to Dialog
+      // Bind ViewModel to Dialog AFTER loading settings
       dialog.bindViewModel(settingsViewModel);
-
-      // Load current settings from TimerViewModel
-      dialog.loadSettings(this._viewModel.settings);
 
       // Show dialog and handle response
       dialog.connect('response', (_dialog, response) => {
