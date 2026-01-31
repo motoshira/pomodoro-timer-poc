@@ -1,8 +1,8 @@
-import type { ITimerService } from '../services/ITimerService';
-import type { ISettingsStorage } from '../services/ISettingsStorage';
 import type { TimerMode } from '../models/TimerMode';
-import type { TimerState } from '../models/TimerState';
 import type { TimerSettings } from '../models/TimerSettings';
+import type { TimerState } from '../models/TimerState';
+import type { ISettingsStorage } from '../services/ISettingsStorage';
+import type { ITimerService } from '../services/ITimerService';
 
 export class TimerViewModel {
   private _remainingSeconds: number;
@@ -14,7 +14,7 @@ export class TimerViewModel {
 
   constructor(
     private timerService: ITimerService,
-    private storage: ISettingsStorage
+    private storage: ISettingsStorage,
   ) {
     this._settings = storage.load();
     this._currentMode = 'WORK';
@@ -38,5 +38,25 @@ export class TimerViewModel {
 
   get settings(): TimerSettings {
     return { ...this._settings };
+  }
+
+  get displayTime(): string {
+    const minutes = Math.floor(this._remainingSeconds / 60);
+    const seconds = this._remainingSeconds % 60;
+    return `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+  }
+
+  get modeLabel(): string {
+    return this._currentMode === 'WORK' ? 'Work' : 'Rest';
+  }
+
+  get modeIcon(): string {
+    return this._currentMode === 'WORK'
+      ? 'preferences-system-time-symbolic'
+      : 'preferences-desktop-screensaver-symbolic';
+  }
+
+  get startStopLabel(): string {
+    return this._state === 'STOPPED' ? 'Start' : 'Stop';
   }
 }
