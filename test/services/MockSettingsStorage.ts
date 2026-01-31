@@ -1,9 +1,9 @@
-import type { ISettingsStorage } from '../../src/services/ISettingsStorage';
 import {
-  TimerSettings,
-  TimerSettingsSchema,
   createDefaultSettings,
+  type TimerSettings,
+  TimerSettingsSchema,
 } from '../../src/models/TimerSettings';
+import type { ISettingsStorage } from '../../src/services/ISettingsStorage';
 
 export class MockSettingsStorage implements ISettingsStorage {
   private _settings: TimerSettings | null = null;

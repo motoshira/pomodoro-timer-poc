@@ -1,5 +1,5 @@
-import { MockSettingsStorage } from './MockSettingsStorage';
 import { TimerSettingsSchema } from '../../src/models/TimerSettings';
+import { MockSettingsStorage } from './MockSettingsStorage';
 
 describe('MockSettingsStorage', () => {
   let storage: MockSettingsStorage;
