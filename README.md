@@ -16,7 +16,7 @@ A Pomodoro timer application built with GTK4 and GJS (GNOME JavaScript bindings)
 
 ### Prerequisites
 
-- Node.js 20+
+- Node.js 22+
 - GTK 4.0
 - GJS (GNOME JavaScript runtime)
 
