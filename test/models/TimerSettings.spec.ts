@@ -1,7 +1,7 @@
 import {
-  TimerSettingsSchema,
-  type TimerSettings,
   createDefaultSettings,
+  type TimerSettings,
+  TimerSettingsSchema,
 } from '../../src/models/TimerSettings';
 
 describe('TimerSettings', () => {

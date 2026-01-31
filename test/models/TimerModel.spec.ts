@@ -1,9 +1,5 @@
-import {
-  TimerModelSchema,
-  type TimerModel,
-  createInitialModel,
-} from '../../src/models/TimerModel';
 import { TimerMode } from '../../src/models/TimerMode';
+import { createInitialModel, type TimerModel, TimerModelSchema } from '../../src/models/TimerModel';
 import { TimerState } from '../../src/models/TimerState';
 
 describe('TimerModel', () => {
