@@ -35,12 +35,12 @@ This document provides a step-by-step implementation checklist for building the 
 - `test/models/TimerMode.spec.ts`
 
 **Steps:**
-- [ ] **1.1.1** Create test file `test/models/TimerMode.spec.ts`
+- [x] **1.1.1** Create test file `test/models/TimerMode.spec.ts`
   - Write tests for enum values (WORK, REST)
   - Write test for enum exhaustiveness
   - Run `npm test` → should FAIL
 
-- [ ] **1.1.2** Implement `src/models/TimerMode.ts`
+- [x] **1.1.2** Implement `src/models/TimerMode.ts`
   ```typescript
   export enum TimerMode {
     WORK = 'WORK',
@@ -49,7 +49,7 @@ This document provides a step-by-step implementation checklist for building the 
   ```
   - Run `npm test` → should PASS
 
-- [ ] **1.1.3** Commit changes
+- [x] **1.1.3** Commit changes
   ```bash
   git add src/models/TimerMode.ts test/models/TimerMode.spec.ts
   git commit -m "Add TimerMode enum with tests"
@@ -72,12 +72,12 @@ TimerMode
 - `test/models/TimerState.spec.ts`
 
 **Steps:**
-- [ ] **1.2.1** Create test file `test/models/TimerState.spec.ts`
+- [x] **1.2.1** Create test file `test/models/TimerState.spec.ts`
   - Write tests for enum values (RUNNING, STOPPED)
   - Write test for enum exhaustiveness
   - Run `npm test` → should FAIL
 
-- [ ] **1.2.2** Implement `src/models/TimerState.ts`
+- [x] **1.2.2** Implement `src/models/TimerState.ts`
   ```typescript
   export enum TimerState {
     RUNNING = 'RUNNING',
@@ -86,7 +86,7 @@ TimerMode
   ```
   - Run `npm test` → should PASS
 
-- [ ] **1.2.3** Commit changes
+- [x] **1.2.3** Commit changes
   ```bash
   git add src/models/TimerState.ts test/models/TimerState.spec.ts
   git commit -m "Add TimerState enum with tests"
@@ -109,13 +109,13 @@ TimerState
 - `test/models/TimerSettings.spec.ts`
 
 **Steps:**
-- [ ] **1.3.1** Create test file `test/models/TimerSettings.spec.ts`
+- [x] **1.3.1** Create test file `test/models/TimerSettings.spec.ts`
   - Write tests for valid settings
   - Write tests for invalid inputs (negative, zero, non-integer, missing fields)
   - Write tests for boundary values
   - Run `npm test` → should FAIL
 
-- [ ] **1.3.2** Implement `src/models/TimerSettings.ts`
+- [x] **1.3.2** Implement `src/models/TimerSettings.ts`
   ```typescript
   import { z } from 'zod';
 
@@ -134,7 +134,7 @@ TimerState
   ```
   - Run `npm test` → should PASS
 
-- [ ] **1.3.3** Commit changes
+- [x] **1.3.3** Commit changes
   ```bash
   git add src/models/TimerSettings.ts test/models/TimerSettings.spec.ts
   git commit -m "Add TimerSettings Zod schema with validation tests"
@@ -163,13 +163,13 @@ TimerSettings
 - `test/models/TimerModel.spec.ts`
 
 **Steps:**
-- [ ] **1.4.1** Create test file `test/models/TimerModel.spec.ts`
+- [x] **1.4.1** Create test file `test/models/TimerModel.spec.ts`
   - Write tests for valid model state
   - Write tests for invalid inputs
   - Write tests for enum constraints
   - Run `npm test` → should FAIL
 
-- [ ] **1.4.2** Implement `src/models/TimerModel.ts`
+- [x] **1.4.2** Implement `src/models/TimerModel.ts`
   ```typescript
   import { z } from 'zod';
   import { TimerMode } from './TimerMode';
@@ -194,7 +194,7 @@ TimerSettings
   ```
   - Run `npm test` → should PASS
 
-- [ ] **1.4.3** Commit changes
+- [x] **1.4.3** Commit changes
   ```bash
   git add src/models/TimerModel.ts test/models/TimerModel.spec.ts
   git commit -m "Add TimerModel Zod schema with validation tests"
