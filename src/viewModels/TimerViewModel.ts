@@ -9,7 +9,7 @@ import {
   tick as tickModel,
   transitionToNextMode,
 } from '../models/TimerModel';
-import { updateSettings as updateSettingsModel, type TimerSettings } from '../models/TimerSettings';
+import { type TimerSettings, updateSettings as updateSettingsModel } from '../models/TimerSettings';
 import type { TimerState } from '../models/TimerState';
 import type { ISettingsStorage } from '../services/ISettingsStorage';
 import type { ITimerService } from '../services/ITimerService';
@@ -20,6 +20,7 @@ class _TimerViewModel extends GObject.Object {
   private _remainingSeconds!: number;
   private _currentMode!: TimerMode;
   private _state!: TimerState;
+  /** @deprecated */
   private _totalSeconds!: number;
   private _settings!: TimerSettings;
   private _timerId: number | null = null;
@@ -193,13 +194,7 @@ class _TimerViewModel extends GObject.Object {
     if (this._state === 'STOPPED') {
       const durationMinutes =
         this._currentMode === 'WORK' ? this._settings.workDuration : this._settings.restDuration;
-      const totalSeconds = durationMinutes * 60;
-
-      this._model = {
-        ...this._model,
-        totalSeconds: totalSeconds,
-        remainingSeconds: totalSeconds,
-      };
+      this._model = transitionToNextMode(this._model, durationMinutes);
       this._syncFromModel();
 
       // Emit property notifications

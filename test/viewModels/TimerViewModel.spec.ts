@@ -39,7 +39,10 @@ describe('TimerViewModel', () => {
       // Create new storage with custom settings
       const customStorage = new MockSettingsStorage();
       const defaultSettings = createDefaultSettings();
-      const customSettings = updateSettings(defaultSettings, { workDuration: 30, restDuration: 10 });
+      const customSettings = updateSettings(defaultSettings, {
+        workDuration: 30,
+        restDuration: 10,
+      });
       if (customSettings) {
         customStorage.save(customSettings);
       }
