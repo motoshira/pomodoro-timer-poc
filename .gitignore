@@ -1,6 +1,7 @@
 node_modules
 dist
 resources/pomodoro.gresource
+resources/ui/
 schemas/gschemas.compiled
 .DS_Store
 *.swp
