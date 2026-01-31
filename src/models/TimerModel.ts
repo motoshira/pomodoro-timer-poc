@@ -7,6 +7,7 @@ export const TimerModelSchema = z
     remainingSeconds: z.number().nonnegative().int(),
     currentMode: TimerModeSchema,
     state: TimerStateSchema,
+    /** @deprecated  SettingsModel */
     totalSeconds: z.number().positive().int(),
   })
   .brand<'TimerModel'>();

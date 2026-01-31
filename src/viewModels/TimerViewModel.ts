@@ -191,7 +191,13 @@ class _TimerViewModel extends GObject.Object {
     if (this._state === 'STOPPED') {
       const durationMinutes =
         this._currentMode === 'WORK' ? this._settings.workDuration : this._settings.restDuration;
-      this._model = transitionToNextMode(this._model, durationMinutes);
+      const totalSeconds = durationMinutes * 60;
+
+      this._model = {
+        ...this._model,
+        totalSeconds: totalSeconds,
+        remainingSeconds: totalSeconds,
+      };
       this._syncFromModel();
 
       // Emit property notifications
