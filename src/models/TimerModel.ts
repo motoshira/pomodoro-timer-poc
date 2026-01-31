@@ -45,7 +45,6 @@ export const start = (
   };
 };
 
-// todo
 export const stop = (
   timerModel: TimerModel,
 ): {
