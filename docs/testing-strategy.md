@@ -415,18 +415,36 @@ Views are tested manually through UI interaction:
 
 ---
 
-## CI/CD Integration (Future)
+## CI/CD Integration
 
-```yaml
-# .github/workflows/test.yml (example)
-name: Test
-on: [push, pull_request]
-jobs:
-  test:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-      - run: npm install
-      - run: npm run build
-      - run: npm test
-```
+GitHub Actions workflow has been configured at `.github/workflows/test.yml`.
+
+### Automated Checks
+
+The CI pipeline runs on every push and pull request:
+
+1. **Linting**: `npm run lint` (Biome)
+2. **Type Checking**: `npm run typecheck` (TypeScript)
+3. **Build**: `npm run build` (Compile TypeScript to JavaScript)
+4. **Tests**: `npm test` (Jasmine unit tests)
+
+### System Dependencies
+
+The CI environment installs required GTK4 and GJS dependencies:
+- `gjs` - JavaScript runtime for GNOME
+- `libgjs-dev` - GJS development libraries
+- `gir1.2-gtk-4.0` - GTK 4.0 introspection bindings
+- `libgtk-4-dev` - GTK 4 development files
+- `libgirepository1.0-dev` - GObject introspection development files
+
+### Artifacts
+
+Test results and coverage reports are uploaded as artifacts for review (retention: 30 days).
+
+### Local Pre-commit Hooks
+
+Pre-commit hooks run the same checks locally before commits:
+- Linting (auto-fix enabled)
+- Type checking
+
+This ensures code quality before pushing to the repository.
