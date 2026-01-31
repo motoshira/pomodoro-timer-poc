@@ -171,4 +171,62 @@ describe('TimerViewModel', () => {
       });
     });
   });
+
+  describe('_tick() Method', () => {
+    it('Should decrement remainingSeconds by 1', () => {
+      const initialSeconds = viewModel.remainingSeconds;
+      viewModel.start();
+
+      const timerId = timerService.getActiveCount() > 0 ? 1 : 0;
+      timerService.tick(timerId);
+
+      expect(viewModel.remainingSeconds).toBe(initialSeconds - 1);
+    });
+
+    it('Should return true when remainingSeconds > 0', () => {
+      viewModel.start();
+      const timerId = 1;
+      const result = timerService.tick(timerId);
+
+      expect(result).toBe(true);
+      expect(timerService.isActive(timerId)).toBe(true);
+    });
+
+    it('Should return false when reaching 0', () => {
+      // Set to 1 second remaining
+      (viewModel as any)._remainingSeconds = 1;
+      viewModel.start();
+
+      const timerId = 1;
+      const result = timerService.tick(timerId);
+
+      expect(result).toBe(false);
+      expect(timerService.isActive(timerId)).toBe(false);
+    });
+
+    it('Should call _transitionToNextMode() when reaching 0', () => {
+      const transitionSpy = spyOn(viewModel as any, '_transitionToNextMode');
+
+      // Set to 1 second remaining
+      (viewModel as any)._remainingSeconds = 1;
+      viewModel.start();
+
+      const timerId = 1;
+      timerService.tick(timerId);
+
+      expect(transitionSpy).toHaveBeenCalled();
+    });
+
+    it('Should continuously decrement on multiple ticks', () => {
+      const initialSeconds = viewModel.remainingSeconds;
+      viewModel.start();
+
+      const timerId = 1;
+      timerService.tick(timerId);
+      timerService.tick(timerId);
+      timerService.tick(timerId);
+
+      expect(viewModel.remainingSeconds).toBe(initialSeconds - 3);
+    });
+  });
 });

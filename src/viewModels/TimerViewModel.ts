@@ -64,10 +64,7 @@ export class TimerViewModel {
     if (this._state === 'RUNNING') return;
 
     this._state = 'RUNNING';
-    this._timerId = this.timerService.startTimer(
-      () => this._tick(),
-      1000
-    );
+    this._timerId = this.timerService.startTimer(() => this._tick(), 1000);
     // TODO: Emit property notification when GObject is implemented
   }
 
@@ -83,7 +80,24 @@ export class TimerViewModel {
   }
 
   private _tick(): boolean {
+    if (this._remainingSeconds > 0) {
+      this._remainingSeconds--;
+      // TODO: Emit property notification when GObject is implemented
+
+      // Check if we reached zero after decrementing
+      if (this._remainingSeconds === 0) {
+        this._transitionToNextMode();
+        return false;
+      }
+
+      return true;
+    }
+
+    // Already at zero (shouldn't happen, but handle gracefully)
+    return false;
+  }
+
+  private _transitionToNextMode(): void {
     // TODO: Implement in next step
-    return true;
   }
 }
