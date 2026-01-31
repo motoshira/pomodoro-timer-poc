@@ -57,6 +57,7 @@ class _MainWindow extends Gtk.ApplicationWindow {
     );
   }
 
+  /** @todo Refactor */
   private _onStartStopClicked(): void {
     if (!this._viewModel) return;
 

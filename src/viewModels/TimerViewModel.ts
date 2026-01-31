@@ -14,6 +14,7 @@ import type { TimerState } from '../models/TimerState';
 import type { ISettingsStorage } from '../services/ISettingsStorage';
 import type { ITimerService } from '../services/ITimerService';
 
+/** @todo Refactor */
 class _TimerViewModel extends GObject.Object {
   private _model!: TimerModel;
   private _remainingSeconds!: number;
@@ -202,6 +203,7 @@ class _TimerViewModel extends GObject.Object {
   }
 }
 
+/** @todo Refactor */
 const TimerViewModelClass = GObject.registerClass(
   {
     GTypeName: 'PomodoroTimerViewModel',

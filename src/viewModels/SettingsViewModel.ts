@@ -1,6 +1,7 @@
 import GObject from 'gi://GObject';
 import { type TimerSettings, TimerSettingsSchema } from '../models/TimerSettings';
 
+/** @todo Refactor */
 class _SettingsViewModel extends GObject.Object {
   private _workDuration = 0;
   private _restDuration = 0;
@@ -82,6 +83,7 @@ class _SettingsViewModel extends GObject.Object {
   }
 }
 
+/** @todo Refactor */
 const SettingsViewModelClass = GObject.registerClass(
   {
     GTypeName: 'PomodoroSettingsViewModel',
