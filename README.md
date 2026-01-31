@@ -12,16 +12,6 @@ A Pomodoro timer application built with GTK4 and GJS (GNOME JavaScript bindings)
 - Clean MVVM architecture with full test coverage
 - Native GTK4 desktop integration
 
-## Architecture
-
-This project follows the MVVM (Model-View-ViewModel) pattern:
-
-- **Models**: Data structures defined with Zod schemas
-- **ViewModels**: GObject classes for business logic and property binding
-- **Views**: GTK4 UI templates (`.ui` files)
-
-See [docs/architecture.md](docs/architecture.md) for detailed architecture documentation.
-
 ## Development
 
 ### Prerequisites
