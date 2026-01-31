@@ -16,3 +16,16 @@ export const createDefaultSettings = (): TimerSettings => {
     restDuration: 5,
   });
 };
+
+// Update settings with partial values
+export const updateSettings = (
+  settings: TimerSettings,
+  updates: Partial<{ workDuration: number; restDuration: number }>,
+): TimerSettings | null => {
+  const updated = {
+    ...settings,
+    ...updates,
+  };
+  const result = TimerSettingsSchema.safeParse(updated);
+  return result.success ? result.data : null;
+};
