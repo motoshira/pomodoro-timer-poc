@@ -8,7 +8,10 @@
     "start": "npm run build && gjs -m dist/main.js",
     "typecheck": "tsc --noEmit",
     "dev": "tsc --watch",
-    "lint": "biome check --write"
+    "lint": "biome check --write",
+    "bundle:tests": "node scripts/bundle-tests.js",
+    "test": "npm run build && npm run bundle:tests && jasmine",
+    "test:watch": "jasmine --watch"
   },
   "devDependencies": {
     "@biomejs/biome": "^2.3.13",
@@ -16,6 +19,10 @@
     "@girs/gjs": "^4.0.0-beta.38",
     "@girs/glib-2.0": "2.86.0-4.0.0-beta.38",
     "@girs/gtk-4.0": "4.20.1-4.0.0-beta.38",
+    "@types/jasmine": "^6.0.0",
+    "esbuild": "^0.27.2",
+    "glob": "^13.0.0",
+    "jasmine-gjs": "^2.6.7",
     "typescript": "^5.7.2"
   },
   "dependencies": {
