@@ -3,6 +3,9 @@
   "version": "1.0.0",
   "description": "GTK Pomodoro Timer built with GJS and TypeScript",
   "type": "module",
+  "engines": {
+    "node": "22.x"
+  },
   "scripts": {
     "build:schemas": "bash scripts/compile-schemas.sh",
     "build:resources": "bash scripts/compile-resources.sh",
