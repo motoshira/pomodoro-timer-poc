@@ -392,4 +392,82 @@ describe('TimerViewModel', () => {
       });
     });
   });
+
+  describe('updateSettings() Method', () => {
+    it('Should update internal settings', () => {
+      const newSettings = TimerSettingsSchema.parse({ workDuration: 30, restDuration: 10 });
+
+      viewModel.updateSettings(newSettings);
+
+      expect(viewModel.settings.workDuration).toBe(30);
+      expect(viewModel.settings.restDuration).toBe(10);
+    });
+
+    it('Should persist to storage', () => {
+      const newSettings = TimerSettingsSchema.parse({ workDuration: 30, restDuration: 10 });
+
+      viewModel.updateSettings(newSettings);
+
+      const loadedSettings = storage.load();
+      expect(loadedSettings.workDuration).toBe(30);
+      expect(loadedSettings.restDuration).toBe(10);
+    });
+
+    it('Should reset timer if in STOPPED state (WORK mode)', () => {
+      expect(viewModel.state).toBe('STOPPED');
+      expect(viewModel.currentMode).toBe('WORK');
+
+      const newSettings = TimerSettingsSchema.parse({ workDuration: 30, restDuration: 10 });
+      viewModel.updateSettings(newSettings);
+
+      // Should apply new work duration
+      expect(viewModel.remainingSeconds).toBe(30 * 60);
+    });
+
+    it('Should reset timer if in STOPPED state (REST mode)', () => {
+      viewModel.skip(); // Go to REST mode
+      expect(viewModel.state).toBe('STOPPED');
+      expect(viewModel.currentMode).toBe('REST');
+
+      const newSettings = TimerSettingsSchema.parse({ workDuration: 30, restDuration: 10 });
+      viewModel.updateSettings(newSettings);
+
+      // Should apply new rest duration
+      expect(viewModel.remainingSeconds).toBe(10 * 60);
+    });
+
+    it('Should not affect running timer until current cycle completes', () => {
+      viewModel.start();
+      const initialSeconds = viewModel.remainingSeconds;
+
+      const newSettings = TimerSettingsSchema.parse({ workDuration: 30, restDuration: 10 });
+      viewModel.updateSettings(newSettings);
+
+      // Should NOT change remainingSeconds while running
+      expect(viewModel.remainingSeconds).toBe(initialSeconds);
+
+      // Tick a few times
+      timerService.tick(1);
+      timerService.tick(1);
+
+      // Still should be using old duration
+      expect(viewModel.remainingSeconds).toBe(initialSeconds - 2);
+    });
+
+    it('Should apply new settings after running timer completes cycle', () => {
+      // Set to 1 second remaining and start
+      (viewModel as any)._remainingSeconds = 1;
+      viewModel.start();
+
+      const newSettings = TimerSettingsSchema.parse({ workDuration: 30, restDuration: 10 });
+      viewModel.updateSettings(newSettings);
+
+      // Complete the cycle (tick to 0, will transition to REST)
+      timerService.tick(1);
+
+      // Now should be in REST mode with new settings
+      expect(viewModel.currentMode).toBe('REST');
+      expect(viewModel.remainingSeconds).toBe(10 * 60); // New rest duration
+    });
+  });
 });

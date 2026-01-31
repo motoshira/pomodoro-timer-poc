@@ -140,4 +140,17 @@ export class TimerViewModel {
 
     // TODO: Emit property notifications when GObject is implemented
   }
+
+  updateSettings(settings: TimerSettings): void {
+    this._settings = { ...settings };
+
+    // Persist to storage
+    this.storage.save(this._settings);
+
+    // If stopped, apply new duration to current mode
+    if (this._state === 'STOPPED') {
+      this._resetToCurrentMode();
+      // TODO: Emit property notifications when GObject is implemented
+    }
+  }
 }
