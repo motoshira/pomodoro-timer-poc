@@ -1511,7 +1511,7 @@ Refer to `docs/testing-strategy.md` for the complete manual testing checklist.
 - [x] Save applies changes correctly
 - [x] Cancel discards changes
 - [x] hasChanges detection works
-- [ ] Settings persist across app restarts (when GSettings implemented)
+- [x] Settings persist across app restarts (when GSettings implemented)
 
 ### 6.2 Bug Fixes
 
@@ -1527,7 +1527,7 @@ Refer to `docs/testing-strategy.md` for the complete manual testing checklist.
     - [x] Save/Cancel buttons does not appear (Fixed: GTK4 doesn't support `<child type="action">`, moved buttons to content area)
     - [x] Settings not saved when Save button clicked (Fixed: Set `_savedSettings` before calling `response()`)
 
-- [ ] **6.2.3** Re-run all tests after fixes
+- [x] **6.2.3** Re-run all tests after fixes
   ```bash
   npm test
   ```
