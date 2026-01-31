@@ -1,25 +1,9 @@
 import Gio from 'gi://Gio?version=2.0';
-import GLib from 'gi://GLib';
 import Gtk from 'gi://Gtk?version=4.0';
 import { GLibTimerService } from './src/services/GLibTimerService';
 import { GSettingsStorage } from './src/services/GSettingsStorage';
 import { MainWindow } from './src/view/MainWindow';
 import { createTimerViewModel } from './src/viewModels/TimerViewModel';
-
-// Load GResource bundle
-const resourcePath = GLib.build_filenamev([
-  GLib.get_current_dir(),
-  'resources',
-  'pomodoro.gresource',
-]);
-const resource = Gio.Resource.load(resourcePath);
-Gio.resources_register(resource);
-
-// Set up GSettings schema directory for development
-GLib.setenv('GSETTINGS_SCHEMA_DIR', GLib.build_filenamev([
-  GLib.get_current_dir(),
-  'schemas',
-]), true);
 
 const application = new Gtk.Application({
   application_id: 'org.example.pomodoro',
