@@ -225,7 +225,7 @@ TimerModel
 - `src/services/ISettingsStorage.ts`
 
 **Steps:**
-- [ ] **2.1.1** Create `src/services/ITimerService.ts` (interface only)
+- [x] **2.1.1** Create `src/services/ITimerService.ts` (interface only)
   ```typescript
   export interface ITimerService {
     startTimer(callback: () => boolean, intervalMs: number): number;
@@ -233,7 +233,7 @@ TimerModel
   }
   ```
 
-- [ ] **2.1.2** Create `src/services/ISettingsStorage.ts` (interface only)
+- [x] **2.1.2** Create `src/services/ISettingsStorage.ts` (interface only)
   ```typescript
   import type { TimerSettings } from '../models/TimerSettings';
 
@@ -244,7 +244,7 @@ TimerModel
   }
   ```
 
-- [ ] **2.1.3** Commit changes
+- [x] **2.1.3** Commit changes
   ```bash
   git add src/services/ITimerService.ts src/services/ISettingsStorage.ts
   git commit -m "Add service interfaces for dependency injection"
@@ -259,13 +259,13 @@ TimerModel
 - `test/services/MockSettingsStorage.spec.ts`
 
 **Steps:**
-- [ ] **2.2.1** Create test file `test/services/MockSettingsStorage.spec.ts`
+- [x] **2.2.1** Create test file `test/services/MockSettingsStorage.spec.ts`
   - Write tests for load/save/getDefaultSettings behavior
   - Write tests for in-memory persistence
   - Write tests for validation
   - Run `npm test` → should FAIL
 
-- [ ] **2.2.2** Implement `test/services/MockSettingsStorage.ts`
+- [x] **2.2.2** Implement `test/services/MockSettingsStorage.ts`
   ```typescript
   import type { ISettingsStorage } from '../../src/services/ISettingsStorage';
   import { TimerSettings, TimerSettingsSchema, createDefaultSettings } from '../../src/models/TimerSettings';
@@ -295,7 +295,7 @@ TimerModel
   ```
   - Run `npm test` → should PASS
 
-- [ ] **2.2.3** Commit changes
+- [x] **2.2.3** Commit changes
   ```bash
   git add test/services/MockSettingsStorage.ts test/services/MockSettingsStorage.spec.ts
   git commit -m "Add MockSettingsStorage with tests"
@@ -320,13 +320,13 @@ MockSettingsStorage
 - `test/services/FakeTimerService.spec.ts`
 
 **Steps:**
-- [ ] **2.3.1** Create test file `test/services/FakeTimerService.spec.ts`
+- [x] **2.3.1** Create test file `test/services/FakeTimerService.spec.ts`
   - Write tests for startTimer/stopTimer behavior
   - Write tests for manual tick control
   - Write tests for multiple concurrent timers
   - Run `npm test` → should FAIL
 
-- [ ] **2.3.2** Implement `test/services/FakeTimerService.ts`
+- [x] **2.3.2** Implement `test/services/FakeTimerService.ts`
   ```typescript
   import type { ITimerService } from '../../src/services/ITimerService';
 
@@ -374,7 +374,7 @@ MockSettingsStorage
   ```
   - Run `npm test` → should PASS
 
-- [ ] **2.3.3** Commit changes
+- [x] **2.3.3** Commit changes
   ```bash
   git add test/services/FakeTimerService.ts test/services/FakeTimerService.spec.ts
   git commit -m "Add FakeTimerService with manual tick control"
