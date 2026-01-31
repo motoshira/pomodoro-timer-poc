@@ -1,6 +1,7 @@
 import GObject from 'gi://GObject';
 import type { TimerMode } from '../models/TimerMode';
 import {
+  calculateDurationSeconds,
   createInitialModel,
   reset as resetModel,
   start as startModel,
@@ -33,7 +34,7 @@ class _TimerViewModel extends GObject.Object {
     this.timerService = timerService;
     this.storage = storage;
     this._settings = storage.load();
-    this._model = createInitialModel(this._settings.workDuration);
+    this._model = createInitialModel(this._settings);
     this._syncFromModel();
   }
 
@@ -130,12 +131,8 @@ class _TimerViewModel extends GObject.Object {
     // Clear timer ID (timer already stopped by returning false from _tick)
     this._timerId = null;
 
-    // Get next mode duration
-    const nextModeDurationMinutes =
-      this._currentMode === 'WORK' ? this._settings.restDuration : this._settings.workDuration;
-
     // Transition to next mode
-    this._model = transitionToNextMode(this._model, nextModeDurationMinutes);
+    this._model = transitionToNextMode(this._model, this._settings);
     this._syncFromModel();
 
     // Emit property notifications
@@ -165,7 +162,7 @@ class _TimerViewModel extends GObject.Object {
       this._timerId = null;
     }
 
-    this._model = resetModel(this._model);
+    this._model = resetModel(this._model, this._settings);
     this._syncFromModel();
 
     // Emit property notifications
@@ -189,14 +186,10 @@ class _TimerViewModel extends GObject.Object {
 
     // If stopped, apply new duration to current mode
     if (this._state === 'STOPPED') {
-      const durationMinutes =
-        this._currentMode === 'WORK' ? this._settings.workDuration : this._settings.restDuration;
-      const totalSeconds = durationMinutes * 60;
-
+      const durationSeconds = calculateDurationSeconds(this._settings, this._model.currentMode);
       this._model = {
         ...this._model,
-        totalSeconds: totalSeconds,
-        remainingSeconds: totalSeconds,
+        remainingSeconds: durationSeconds,
       };
       this._syncFromModel();
 

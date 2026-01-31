@@ -313,7 +313,9 @@ describe('TimerViewModel', () => {
 
         // Set to REST mode first
         // biome-ignore lint/suspicious/noExplicitAny: test helper to access private member
-        (viewModel as any)._currentMode = 'REST';
+        (viewModel as any)._model = { ...(viewModel as any)._model, currentMode: 'REST' };
+        // biome-ignore lint/suspicious/noExplicitAny: test helper to access private member
+        (viewModel as any)._syncFromModel();
 
         // Trigger transition from REST to WORK
         // biome-ignore lint/suspicious/noExplicitAny: test helper to access private member
@@ -510,9 +512,9 @@ describe('TimerViewModel', () => {
         // Set to 3 seconds for quick test
         // biome-ignore lint/suspicious/noExplicitAny: test helper to access private member
         (viewModel as any)._model = {
+          // biome-ignore lint/suspicious/noExplicitAny: test helper to access private member
           ...(viewModel as any)._model,
           remainingSeconds: 3,
-          totalSeconds: 3,
         };
         // biome-ignore lint/suspicious/noExplicitAny: test helper to access private member
         (viewModel as any)._syncFromModel();
@@ -542,9 +544,9 @@ describe('TimerViewModel', () => {
         // Set to 3 seconds for quick test
         // biome-ignore lint/suspicious/noExplicitAny: test helper to access private member
         (viewModel as any)._model = {
+          // biome-ignore lint/suspicious/noExplicitAny: test helper to access private member
           ...(viewModel as any)._model,
           remainingSeconds: 3,
-          totalSeconds: 3,
         };
         // biome-ignore lint/suspicious/noExplicitAny: test helper to access private member
         (viewModel as any)._syncFromModel();
@@ -616,9 +618,9 @@ describe('TimerViewModel', () => {
         // Set to 2 seconds for quick test
         // biome-ignore lint/suspicious/noExplicitAny: test helper to access private member
         (viewModel as any)._model = {
+          // biome-ignore lint/suspicious/noExplicitAny: test helper to access private member
           ...(viewModel as any)._model,
           remainingSeconds: 2,
-          totalSeconds: 2,
         };
         // biome-ignore lint/suspicious/noExplicitAny: test helper to access private member
         (viewModel as any)._syncFromModel();
@@ -674,9 +676,9 @@ describe('TimerViewModel', () => {
           // Set short duration for testing
           // biome-ignore lint/suspicious/noExplicitAny: test helper to access private member
           (viewModel as any)._model = {
+            // biome-ignore lint/suspicious/noExplicitAny: test helper to access private member
             ...(viewModel as any)._model,
             remainingSeconds: 2,
-            totalSeconds: 2,
           };
           // biome-ignore lint/suspicious/noExplicitAny: test helper to access private member
           (viewModel as any)._syncFromModel();

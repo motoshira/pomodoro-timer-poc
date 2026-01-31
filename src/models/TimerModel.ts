@@ -1,5 +1,6 @@
 import { z } from 'zod';
-import { TimerModeSchema } from './TimerMode';
+import { type TimerMode, TimerModeSchema } from './TimerMode';
+import type { TimerSettings } from './TimerSettings';
 import { TimerStateSchema } from './TimerState';
 
 export const TimerModelSchema = z
@@ -7,20 +8,24 @@ export const TimerModelSchema = z
     remainingSeconds: z.number().nonnegative().int(),
     currentMode: TimerModeSchema,
     state: TimerStateSchema,
-    /** @deprecated  SettingsModel */
-    totalSeconds: z.number().positive().int(),
   })
   .brand<'TimerModel'>();
 
 export type TimerModel = z.infer<typeof TimerModelSchema>;
 
+// Helper function to calculate duration from settings
+export const calculateDurationSeconds = (settings: TimerSettings, mode: TimerMode): number => {
+  const durationMinutes = mode === 'WORK' ? settings.workDuration : settings.restDuration;
+  return durationMinutes * 60;
+};
+
 // Helper for creating initial model
-export const createInitialModel = (workDurationMinutes: number): TimerModel => {
+export const createInitialModel = (settings: TimerSettings): TimerModel => {
+  const initialDuration = calculateDurationSeconds(settings, 'WORK');
   return TimerModelSchema.parse({
-    remainingSeconds: workDurationMinutes * 60,
+    remainingSeconds: initialDuration,
     currentMode: 'WORK',
     state: 'STOPPED',
-    totalSeconds: workDurationMinutes * 60,
   });
 };
 
@@ -68,11 +73,12 @@ export const stop = (
   };
 };
 
-export const reset = (timerModel: TimerModel): TimerModel => {
+export const reset = (timerModel: TimerModel, settings: TimerSettings): TimerModel => {
+  const durationSeconds = calculateDurationSeconds(settings, timerModel.currentMode);
   return {
     ...timerModel,
     state: 'STOPPED',
-    remainingSeconds: timerModel.totalSeconds,
+    remainingSeconds: durationSeconds,
   } as TimerModel;
 };
 
@@ -88,24 +94,16 @@ export const tick = (timerModel: TimerModel): TimerModel => {
   } as TimerModel;
 };
 
-export const resetToCurrentMode = (timerModel: TimerModel): TimerModel => {
-  return {
-    ...timerModel,
-    remainingSeconds: timerModel.totalSeconds,
-  } as TimerModel;
-};
-
 export const transitionToNextMode = (
   timerModel: TimerModel,
-  nextModeDurationMinutes: number,
+  settings: TimerSettings,
 ): TimerModel => {
   const nextMode = timerModel.currentMode === 'WORK' ? 'REST' : 'WORK';
-  const totalSeconds = nextModeDurationMinutes * 60;
+  const durationSeconds = calculateDurationSeconds(settings, nextMode);
   return {
     ...timerModel,
     currentMode: nextMode,
     state: 'STOPPED',
-    totalSeconds: totalSeconds,
-    remainingSeconds: totalSeconds,
+    remainingSeconds: durationSeconds,
   } as TimerModel;
 };
