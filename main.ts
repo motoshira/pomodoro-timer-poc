@@ -1,41 +1,27 @@
 import Gio from 'gi://Gio?version=2.0';
-import GObject from 'gi://GObject';
 import Gtk from 'gi://Gtk?version=4.0';
+import { GLibTimerService } from './src/services/GLibTimerService';
+import { GSettingsStorage } from './src/services/GSettingsStorage';
+import { MainWindow } from './src/view/MainWindow';
+import { createTimerViewModel } from './src/viewModels/TimerViewModel';
 
-class PomodoroApplication extends Gtk.Application {
-  static {
-    GObject.registerClass(PomodoroApplication);
-  }
+const application = new Gtk.Application({
+  application_id: 'org.example.pomodoro',
+  flags: Gio.ApplicationFlags.DEFAULT_FLAGS,
+});
 
-  constructor() {
-    super({
-      application_id: 'com.example.pomodoro',
-      flags: Gio.ApplicationFlags.DEFAULT_FLAGS,
-    });
-  }
+application.connect('activate', () => {
+  // Create services
+  const timerService = new GLibTimerService();
+  const storage = new GSettingsStorage();
 
-  vfunc_activate(): void {
-    // Create the main application window
-    const window = new Gtk.ApplicationWindow({
-      application: this,
-      title: 'Pomodoro Timer',
-      default_width: 400,
-      default_height: 300,
-    });
+  // Create ViewModel
+  const viewModel = createTimerViewModel(timerService, storage);
 
-    // Create a label with "Hello World" text
-    const label = new Gtk.Label({
-      label: 'Hello World',
-    });
+  // Create and show window
+  const window = new MainWindow({ application });
+  window.bindViewModel(viewModel);
+  window.present();
+});
 
-    // Set the label as the window's child (GTK 4.0 API)
-    window.set_child(label);
-
-    // Show the window
-    window.present();
-  }
-}
-
-// Create and run the application
-const app = new PomodoroApplication();
-app.run([]);
+application.run([]);

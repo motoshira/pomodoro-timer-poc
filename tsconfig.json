@@ -9,6 +9,7 @@
     "esModuleInterop": true,
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
+    "useDefineForClassFields": false,
     "types": [
       "@girs/gjs",
       "@girs/gtk-4.0",

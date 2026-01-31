@@ -4,13 +4,15 @@
   "description": "GTK Pomodoro Timer built with GJS and TypeScript",
   "type": "module",
   "scripts": {
-    "build": "tsc",
+    "build:schemas": "bash scripts/compile-schemas.sh",
+    "build:resources": "bash scripts/compile-resources.sh",
+    "build:ts": "esbuild main.ts --bundle --format=esm --platform=neutral --external:gi://* --keep-names --inject:src/init-resources.ts --supported:class-field=false --outfile=dist/main.js",
+    "build": "npm run build:schemas && npm run build:resources && npm run build:ts",
     "start": "npm run build && gjs -m dist/main.js",
     "typecheck": "tsc --noEmit",
     "dev": "tsc --watch",
     "lint": "biome check --write",
-    "bundle:tests": "node scripts/bundle-tests.js",
-    "test": "npm run build && npm run bundle:tests && jasmine",
+    "test": "esbuild test/index.ts --bundle --format=esm --platform=neutral --external:gi://* --outfile=dist/test-bundle.js && jasmine --module dist/test-bundle.js",
     "test:watch": "jasmine --watch",
     "ui:validate": "sh -c 'for file in src/view/*.ui; do gtk4-builder-tool validate \"$file\" || exit 1; done'",
     "ui:simplify": "sh -c 'for file in src/view/*.ui; do gtk4-builder-tool simplify --replace \"$file\" || exit 1; done'"

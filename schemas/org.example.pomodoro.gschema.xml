@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schemalist>
+  <schema id="org.example.pomodoro" path="/org/example/pomodoro/">
+    <key name="work-duration" type="i">
+      <default>25</default>
+      <range min="1" max="120"/>
+      <summary>Work duration in minutes</summary>
+      <description>Duration of work sessions in the Pomodoro timer</description>
+    </key>
+    <key name="rest-duration" type="i">
+      <default>5</default>
+      <range min="1" max="60"/>
+      <summary>Rest duration in minutes</summary>
+      <description>Duration of rest sessions in the Pomodoro timer</description>
+    </key>
+  </schema>
+</schemalist>
