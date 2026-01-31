@@ -98,6 +98,26 @@ export class TimerViewModel {
   }
 
   private _transitionToNextMode(): void {
-    // TODO: Implement in next step
+    // Switch mode
+    this._currentMode = this._currentMode === 'WORK'
+      ? 'REST'
+      : 'WORK';
+
+    // Set to stopped state
+    this._state = 'STOPPED';
+
+    // Reset timer for new mode
+    this._resetToCurrentMode();
+
+    // TODO: Emit property notifications when GObject is implemented
+  }
+
+  private _resetToCurrentMode(): void {
+    const durationMinutes = this._currentMode === 'WORK'
+      ? this._settings.workDuration
+      : this._settings.restDuration;
+
+    this._totalSeconds = durationMinutes * 60;
+    this._remainingSeconds = this._totalSeconds;
   }
 }

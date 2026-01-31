@@ -229,4 +229,60 @@ describe('TimerViewModel', () => {
       expect(viewModel.remainingSeconds).toBe(initialSeconds - 3);
     });
   });
+
+  describe('Mode Transitions', () => {
+    describe('_transitionToNextMode()', () => {
+      it('Should transition from WORK to REST', () => {
+        expect(viewModel.currentMode).toBe('WORK');
+
+        // Trigger transition
+        (viewModel as any)._transitionToNextMode();
+
+        expect(viewModel.currentMode).toBe('REST');
+      });
+
+      it('Should transition from REST to WORK', () => {
+        // Set to REST mode first
+        (viewModel as any)._currentMode = 'REST';
+
+        // Trigger transition
+        (viewModel as any)._transitionToNextMode();
+
+        expect(viewModel.currentMode).toBe('WORK');
+      });
+
+      it('Should set state to STOPPED after transition', () => {
+        viewModel.start();
+        expect(viewModel.state).toBe('RUNNING');
+
+        // Trigger transition
+        (viewModel as any)._transitionToNextMode();
+
+        expect(viewModel.state).toBe('STOPPED');
+      });
+
+      it('Should set remainingSeconds to new mode\'s duration (WORK → REST)', () => {
+        const settings = storage.getDefaultSettings();
+        const expectedRestSeconds = settings.restDuration * 60;
+
+        // Trigger transition from WORK to REST
+        (viewModel as any)._transitionToNextMode();
+
+        expect(viewModel.remainingSeconds).toBe(expectedRestSeconds);
+      });
+
+      it('Should set remainingSeconds to new mode\'s duration (REST → WORK)', () => {
+        const settings = storage.getDefaultSettings();
+        const expectedWorkSeconds = settings.workDuration * 60;
+
+        // Set to REST mode first
+        (viewModel as any)._currentMode = 'REST';
+
+        // Trigger transition from REST to WORK
+        (viewModel as any)._transitionToNextMode();
+
+        expect(viewModel.remainingSeconds).toBe(expectedWorkSeconds);
+      });
+    });
+  });
 });
