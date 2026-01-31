@@ -1,5 +1,5 @@
-import { SettingsViewModel } from '../../src/viewModels/SettingsViewModel';
 import { TimerSettingsSchema } from '../../src/models/TimerSettings';
+import { SettingsViewModel } from '../../src/viewModels/SettingsViewModel';
 
 describe('SettingsViewModel', () => {
   let viewModel: SettingsViewModel;

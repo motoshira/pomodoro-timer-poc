@@ -1,4 +1,4 @@
-import { TimerSettings, TimerSettingsSchema } from '../models/TimerSettings';
+import { type TimerSettings, TimerSettingsSchema } from '../models/TimerSettings';
 
 export class SettingsViewModel {
   private _workDuration = 0;
@@ -46,7 +46,7 @@ export class SettingsViewModel {
   save(): TimerSettings {
     const settings = {
       workDuration: this._workDuration,
-      restDuration: this._restDuration
+      restDuration: this._restDuration,
     };
 
     // Validate and return with brand
