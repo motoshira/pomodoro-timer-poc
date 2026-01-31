@@ -235,6 +235,16 @@ const TimerViewModelClass = GObject.registerClass(
         this.notify('display-time');
       }
     }
+
+    vfunc_dispose(): void {
+      // Clean up timer if running
+      if (this._timerId !== null) {
+        this.timerService.stopTimer(this._timerId);
+        this._timerId = null;
+      }
+
+      super.vfunc_dispose();
+    }
   },
 );
 

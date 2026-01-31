@@ -4,9 +4,10 @@
   "description": "GTK Pomodoro Timer built with GJS and TypeScript",
   "type": "module",
   "scripts": {
+    "build:schemas": "bash scripts/compile-schemas.sh",
     "build:resources": "bash scripts/compile-resources.sh",
     "build:ts": "node scripts/build-ts.js",
-    "build": "npm run build:resources && npm run build:ts",
+    "build": "npm run build:schemas && npm run build:resources && npm run build:ts",
     "start": "npm run build && gjs -m dist/main.js",
     "typecheck": "tsc --noEmit",
     "dev": "tsc --watch",

@@ -15,6 +15,7 @@ export const SettingsDialog = GObject.registerClass(
     private _saveButton!: Gtk.Button;
     private _cancelButton!: Gtk.Button;
     private _viewModel: SettingsViewModel | null = null;
+    private _savedSettings: TimerSettings | null = null;
 
     _init(params?: Partial<Gtk.Dialog.ConstructorProps>) {
       super._init(params);
@@ -55,10 +56,11 @@ export const SettingsDialog = GObject.registerClass(
         // Signal that settings were saved successfully
         this.response(Gtk.ResponseType.OK);
         // Pass the settings via data property
-        (this as any)._savedSettings = settings;
+        this._savedSettings = settings;
       } catch (error) {
         console.error('Failed to save settings:', error);
-        // Optionally show an error dialog
+        const message = error instanceof Error ? error.message : 'Invalid settings values';
+        this._showErrorDialog(message);
       }
     }
 
@@ -67,8 +69,22 @@ export const SettingsDialog = GObject.registerClass(
       this.response(Gtk.ResponseType.CANCEL);
     }
 
+    private _showErrorDialog(message: string): void {
+      const errorDialog = new Gtk.MessageDialog({
+        transient_for: this,
+        modal: true,
+        message_type: Gtk.MessageType.ERROR,
+        buttons: Gtk.ButtonsType.OK,
+        text: 'Settings Validation Failed',
+        secondary_text: message,
+      });
+
+      errorDialog.connect('response', () => errorDialog.close());
+      errorDialog.show();
+    }
+
     getSavedSettings(): TimerSettings | null {
-      return (this as any)._savedSettings || null;
+      return this._savedSettings;
     }
   },
 );
