@@ -11,7 +11,9 @@
     "lint": "biome check --write",
     "bundle:tests": "node scripts/bundle-tests.js",
     "test": "npm run build && npm run bundle:tests && jasmine",
-    "test:watch": "jasmine --watch"
+    "test:watch": "jasmine --watch",
+    "ui:validate": "sh -c 'for file in src/view/*.ui; do gtk4-builder-tool validate \"$file\" || exit 1; done'",
+    "ui:simplify": "sh -c 'for file in src/view/*.ui; do gtk4-builder-tool simplify --replace \"$file\" || exit 1; done'"
   },
   "devDependencies": {
     "@biomejs/biome": "^2.3.13",
