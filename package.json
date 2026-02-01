@@ -9,11 +9,10 @@
   "scripts": {
     "build:schemas": "bash scripts/compile-schemas.sh",
     "build:resources": "bash scripts/compile-resources.sh",
-    "build:ts": "esbuild main.ts --bundle --format=esm --platform=neutral --external:gi://* --keep-names --inject:src/init-resources.ts --supported:class-field=false --outfile=dist/main.js",
+    "build:ts": "esbuild main.ts --bundle --format=esm --platform=neutral --external:gi://* --inject:src/init-resources.ts --supported:class-field=false --minify --outfile=dist/main.js",
     "build": "npm run build:schemas && npm run build:resources && npm run build:ts",
     "start": "npm run build && gjs -m dist/main.js",
     "typecheck": "tsc --noEmit",
-    "dev": "tsc --watch",
     "lint": "biome check --write",
     "test": "esbuild test/index.ts --bundle --format=esm --platform=neutral --external:gi://* --outfile=dist/test-bundle.js && jasmine --module dist/test-bundle.js",
     "test:watch": "jasmine --watch",
