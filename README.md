@@ -77,8 +77,15 @@ GitHub Actions automatically runs on every push and pull request:
 pomodoro-timer-poc/
 ├── src/
 │   ├── models/          # Zod schemas and types
-│   ├── viewModels/      # GObject ViewModels
-│   ├── view/            # GTK UI templates
+│   ├── views/           # View components (MVVM pattern)
+│   │   ├── MainWindow/       # Main window component
+│   │   │   ├── MainWindow.ts    # Controller (GObject)
+│   │   │   ├── MainWindow.ui    # GTK template
+│   │   │   └── TimerViewModel.ts # ViewModel
+│   │   └── SettingsDialog/   # Settings dialog component
+│   │       ├── SettingsDialog.ts    # Controller
+│   │       ├── SettingsDialog.ui    # GTK template
+│   │       └── SettingsViewModel.ts # ViewModel
 │   ├── services/        # Service interfaces and implementations
 │   └── main.ts          # Application entry point
 ├── test/                # Unit tests
