@@ -59,10 +59,6 @@ npm run typecheck
 
 See [docs/testing-strategy.md](docs/testing-strategy.md) for comprehensive testing documentation.
 
-### Implementation
-
-Follow the step-by-step implementation guide in [docs/implementation-plan.md](docs/implementation-plan.md).
-
 ## CI/CD
 
 GitHub Actions automatically runs on every push and pull request:
@@ -77,14 +73,19 @@ GitHub Actions automatically runs on every push and pull request:
 pomodoro-timer-poc/
 ├── src/
 │   ├── models/          # Zod schemas and types
-│   ├── viewModels/      # GObject ViewModels
-│   ├── view/            # GTK UI templates
+│   ├── views/           # View components (MVVM pattern)
+│   │   ├── MainWindow/       # Main window component
+│   │   │   ├── MainWindow.ts    # Controller (GObject)
+│   │   │   ├── MainWindow.ui    # GTK template
+│   │   │   └── TimerViewModel.ts # ViewModel
+│   │   └── SettingsDialog/   # Settings dialog component
+│   │       ├── SettingsDialog.ts    # Controller
+│   │       ├── SettingsDialog.ui    # GTK template
+│   │       └── SettingsViewModel.ts # ViewModel
 │   ├── services/        # Service interfaces and implementations
 │   └── main.ts          # Application entry point
 ├── test/                # Unit tests
 ├── docs/                # Documentation
-│   ├── architecture.md        # Architecture design
-│   ├── implementation-plan.md # Step-by-step implementation guide
 │   └── testing-strategy.md    # Testing documentation
 └── dist/                # Compiled JavaScript (gitignored)
 ```

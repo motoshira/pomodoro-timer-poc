@@ -1,5 +1,5 @@
 import GObject from 'gi://GObject';
-import type { TimerMode } from '../models/TimerMode';
+import type { TimerMode } from '../../models/TimerMode';
 import {
   calculateDurationSeconds,
   createInitialModel,
@@ -9,11 +9,14 @@ import {
   type TimerModel,
   tick as tickModel,
   transitionToNextMode,
-} from '../models/TimerModel';
-import { type TimerSettings, updateSettings as updateSettingsModel } from '../models/TimerSettings';
-import type { TimerState } from '../models/TimerState';
-import type { ISettingsStorage } from '../services/ISettingsStorage';
-import type { ITimerService } from '../services/ITimerService';
+} from '../../models/TimerModel';
+import {
+  type TimerSettings,
+  updateSettings as updateSettingsModel,
+} from '../../models/TimerSettings';
+import type { TimerState } from '../../models/TimerState';
+import type { ISettingsStorage } from '../../services/ISettingsStorage';
+import type { ITimerService } from '../../services/ITimerService';
 
 /** @todo Refactor */
 class _TimerViewModel extends GObject.Object {

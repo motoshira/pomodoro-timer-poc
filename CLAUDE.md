@@ -59,14 +59,16 @@ This project follows the MVVM (Model-View-ViewModel) architecture pattern:
 
 **Model**: Define models using Zod schemas and generate pure TypeScript records from those schemas. Models should be placed in `src/models/`.
 
-**ViewModel**: Implement ViewModels as GObject classes to enable property binding with GTK. ViewModels should be placed in `src/viewModels/`.
-
-**View**: Define views using `.ui` template files (GTK's XML-based UI definition format). Views should be placed in `src/view/`.
+**View**: Each view component is organized in its own directory under `src/views/`, containing:
+- Controller (.ts) - GObject class extending GTK widgets
+- Template (.ui) - GTK XML-based UI definition
+- ViewModel (.ts) - GObject-based ViewModel for property binding
 
 **Directory Structure**:
 ```
 src/
 ├── models/      # Zod schemas and TypeScript types
-├── viewModels/  # GObject-based ViewModels
-└── view/        # GTK .ui template files
+└── views/       # View components (controller + template + ViewModel)
+    ├── MainWindow/
+    └── SettingsDialog/
 ```

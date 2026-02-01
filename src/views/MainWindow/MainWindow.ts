@@ -1,8 +1,8 @@
 import GObject from 'gi://GObject';
 import Gtk from 'gi://Gtk';
-import { createSettingsViewModel } from '../viewModels/SettingsViewModel';
-import type { TimerViewModel } from '../viewModels/TimerViewModel';
-import { SettingsDialog } from './SettingsDialog';
+import { SettingsDialog } from '../SettingsDialog/SettingsDialog';
+import { createSettingsViewModel } from '../SettingsDialog/SettingsViewModel';
+import type { TimerViewModel } from './TimerViewModel';
 
 class _MainWindow extends Gtk.ApplicationWindow {
   private _timeLabel!: Gtk.Label;

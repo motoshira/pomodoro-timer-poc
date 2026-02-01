@@ -2,8 +2,8 @@ import Gio from 'gi://Gio?version=2.0';
 import Gtk from 'gi://Gtk?version=4.0';
 import { GLibTimerService } from './src/services/GLibTimerService';
 import { GSettingsStorage } from './src/services/GSettingsStorage';
-import { MainWindow } from './src/view/MainWindow';
-import { createTimerViewModel } from './src/viewModels/TimerViewModel';
+import { MainWindow } from './src/views/MainWindow/MainWindow';
+import { createTimerViewModel } from './src/views/MainWindow/TimerViewModel';
 
 const application = new Gtk.Application({
   application_id: 'org.example.pomodoro',

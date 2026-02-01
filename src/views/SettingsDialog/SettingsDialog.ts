@@ -1,7 +1,7 @@
 import GObject from 'gi://GObject';
 import Gtk from 'gi://Gtk';
-import type { TimerSettings } from '../models/TimerSettings';
-import type { SettingsViewModel } from '../viewModels/SettingsViewModel';
+import type { TimerSettings } from '../../models/TimerSettings';
+import type { SettingsViewModel } from './SettingsViewModel';
 
 class _SettingsDialog extends Gtk.Dialog {
   private _workDurationInput!: Gtk.SpinButton;
