@@ -1,5 +1,5 @@
 import GObject from 'gi://GObject';
-import { type TimerSettings, TimerSettingsSchema } from '../models/TimerSettings';
+import { type TimerSettings, TimerSettingsSchema } from '../../models/TimerSettings';
 
 /** @todo Refactor */
 class _SettingsViewModel extends GObject.Object {

@@ -8,8 +8,8 @@ PROJECT_ROOT="$(dirname "$SCRIPT_DIR")"
 
 # Copy UI files to resources directory
 mkdir -p "$PROJECT_ROOT/resources/ui"
-cp "$PROJECT_ROOT/src/view/MainWindow.ui" "$PROJECT_ROOT/resources/ui/"
-cp "$PROJECT_ROOT/src/view/SettingsDialog.ui" "$PROJECT_ROOT/resources/ui/"
+cp "$PROJECT_ROOT/src/views/MainWindow/MainWindow.ui" "$PROJECT_ROOT/resources/ui/"
+cp "$PROJECT_ROOT/src/views/SettingsDialog/SettingsDialog.ui" "$PROJECT_ROOT/resources/ui/"
 
 # Compile GResource
 glib-compile-resources \

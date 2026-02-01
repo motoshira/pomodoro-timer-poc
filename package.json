@@ -17,8 +17,8 @@
     "lint": "biome check --write",
     "test": "esbuild test/index.ts --bundle --format=esm --platform=neutral --external:gi://* --outfile=dist/test-bundle.js && jasmine --module dist/test-bundle.js",
     "test:watch": "jasmine --watch",
-    "ui:validate": "sh -c 'for file in src/view/*.ui; do gtk4-builder-tool validate \"$file\" || exit 1; done'",
-    "ui:simplify": "sh -c 'for file in src/view/*.ui; do gtk4-builder-tool simplify --replace \"$file\" || exit 1; done'"
+    "ui:validate": "sh -c 'for file in src/views/*/*.ui; do gtk4-builder-tool validate \"$file\" || exit 1; done'",
+    "ui:simplify": "sh -c 'for file in src/views/*/*.ui; do gtk4-builder-tool simplify --replace \"$file\" || exit 1; done'"
   },
   "devDependencies": {
     "@biomejs/biome": "^2.3.13",
