@@ -8,8 +8,12 @@ PROJECT_ROOT="$(dirname "$SCRIPT_DIR")"
 
 # Copy UI files to resources directory
 mkdir -p "$PROJECT_ROOT/resources/ui"
-cp "$PROJECT_ROOT/src/views/MainWindow/MainWindow.ui" "$PROJECT_ROOT/resources/ui/"
-cp "$PROJECT_ROOT/src/views/SettingsDialog/SettingsDialog.ui" "$PROJECT_ROOT/resources/ui/"
+
+# Find all .ui files under src/ and copy them to resources/ui/
+find "$PROJECT_ROOT/src" -name "*.ui" -type f | while read -r ui_file; do
+  cp "$ui_file" "$PROJECT_ROOT/resources/ui/"
+  echo "Copied: $(basename "$ui_file")"
+done
 
 # Compile GResource
 glib-compile-resources \

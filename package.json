@@ -8,9 +8,10 @@
   },
   "scripts": {
     "build:schemas": "bash scripts/compile-schemas.sh",
+    "generate:gresource": "node scripts/generate-gresource-xml.mjs",
     "build:resources": "bash scripts/compile-resources.sh",
     "build:ts": "esbuild main.ts --bundle --format=esm --platform=neutral --external:gi://* --inject:src/init-resources.ts --supported:class-field=false --minify --outfile=dist/main.js",
-    "build": "npm run build:schemas && npm run build:resources && npm run build:ts",
+    "build": "npm run build:schemas && npm run generate:gresource && npm run build:resources && npm run build:ts",
     "start": "npm run build && gjs -m dist/main.js",
     "typecheck": "tsc --noEmit",
     "lint": "biome check --write",
@@ -29,6 +30,7 @@
     "esbuild": "^0.27.2",
     "glob": "^13.0.0",
     "jasmine-gjs": "^2.6.7",
+    "mustache": "^4.2.0",
     "typescript": "^5.7.2"
   },
   "dependencies": {
