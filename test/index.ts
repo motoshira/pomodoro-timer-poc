@@ -8,5 +8,5 @@ import './models/TimerModel.spec';
 import './services/MockSettingsStorage.spec';
 import './services/FakeTimerService.spec';
 
-// ViewModels
-import './viewModels/TimerViewModel.spec';
+// Views
+import './views/MainWindow/TimerViewModel.spec';
