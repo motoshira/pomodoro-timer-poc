@@ -59,10 +59,6 @@ npm run typecheck
 
 See [docs/testing-strategy.md](docs/testing-strategy.md) for comprehensive testing documentation.
 
-### Implementation
-
-Follow the step-by-step implementation guide in [docs/implementation-plan.md](docs/implementation-plan.md).
-
 ## CI/CD
 
 GitHub Actions automatically runs on every push and pull request:
@@ -90,8 +86,6 @@ pomodoro-timer-poc/
 │   └── main.ts          # Application entry point
 ├── test/                # Unit tests
 ├── docs/                # Documentation
-│   ├── architecture.md        # Architecture design
-│   ├── implementation-plan.md # Step-by-step implementation guide
 │   └── testing-strategy.md    # Testing documentation
 └── dist/                # Compiled JavaScript (gitignored)
 ```
