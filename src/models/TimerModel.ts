@@ -1,4 +1,4 @@
-import { z } from 'zod';
+import * as z from 'zod';
 import { type TimerMode, TimerModeSchema } from './TimerMode';
 import type { TimerSettings } from './TimerSettings';
 import { TimerStateSchema } from './TimerState';
