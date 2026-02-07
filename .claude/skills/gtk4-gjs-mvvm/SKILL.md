@@ -290,7 +290,7 @@ src/
 test/
 ├── models/       # Model tests
 ├── domain/       # Domain tests
-├── viewModels/   # ViewModel integration tests
+├── views/        # ViewModel integration tests (matches src/ structure)
 └── services/     # Fake/Mock implementations
 ```
 

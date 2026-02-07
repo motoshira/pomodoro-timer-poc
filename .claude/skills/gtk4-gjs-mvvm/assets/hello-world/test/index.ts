@@ -1,3 +1,3 @@
 import 'jasmine';
 import './models/Counter.spec';
-import './viewModels/CounterViewModel.spec';
+import './views/CounterViewModel.spec';

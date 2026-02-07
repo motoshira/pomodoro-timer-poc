@@ -39,7 +39,7 @@ This template provides a simple counter application that follows best practices 
 │   └── init-resources.ts # GResource initialization
 ├── test/                # Test files
 │   ├── models/          # Model tests
-│   ├── viewModels/      # ViewModel tests
+│   ├── views/           # ViewModel tests (matches src/ structure)
 │   └── services/        # Service test helpers (Fakes/Mocks)
 ├── resources/           # GTK resources (generated)
 ├── scripts/             # Build scripts

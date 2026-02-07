@@ -62,7 +62,7 @@ import 'jasmine';
 // Import all test files
 import './models/TimerSettings.spec';
 import './models/TimerModel.spec';
-import './viewModels/TimerViewModel.spec';
+import './views/TimerViewModel.spec';
 ```
 
 ## Model Layer Testing
@@ -663,7 +663,7 @@ test/
 │   └── TimerModel.spec.ts
 ├── domain/               # Domain tests (if applicable)
 │   └── TimerCycle.spec.ts
-├── viewModels/           # ViewModel tests
+├── views/                # ViewModel tests (matches src/ structure)
 │   └── CounterViewModel.spec.ts
 └── services/             # Service test helpers
     ├── FakeTimerService.ts
