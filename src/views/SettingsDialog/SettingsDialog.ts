@@ -6,7 +6,6 @@ class _SettingsDialog extends Gtk.Dialog {
   private _workDurationInput!: Gtk.SpinButton;
   private _restDurationInput!: Gtk.SpinButton;
   private _closeButton!: Gtk.Button;
-  private _viewModel: SettingsViewModel | null = null;
 
   _init(params?: Partial<Gtk.Dialog.ConstructorProps>) {
     super._init(params);
@@ -16,7 +15,6 @@ class _SettingsDialog extends Gtk.Dialog {
   }
 
   bindViewModel(viewModel: SettingsViewModel): void {
-    this._viewModel = viewModel;
 
     // Bind ViewModel properties to SpinButton values
     viewModel.bind_property(

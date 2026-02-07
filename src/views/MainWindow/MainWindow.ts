@@ -81,8 +81,10 @@ class _MainWindow extends Gtk.ApplicationWindow {
     // Connect to settings-changed signal BEFORE creating dialog
     const signalId = settingsViewModel.connect('settings-changed', () => {
       // Reload settings from storage and update TimerViewModel
-      const updatedSettings = this.storage!.load();
-      this._viewModel?.updateSettings(updatedSettings);
+      const updatedSettings = this.storage?.load();
+      if (updatedSettings) {
+        this._viewModel?.updateSettings(updatedSettings);
+      }
     });
 
     // Create and show dialog
