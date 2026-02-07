@@ -57,15 +57,8 @@ class _MainWindow extends Gtk.ApplicationWindow {
     );
   }
 
-  /** @todo Refactor */
   private _onStartStopClicked(): void {
-    if (!this._viewModel) return;
-
-    if (this._viewModel.state === 'STOPPED') {
-      this._viewModel.start();
-    } else {
-      this._viewModel.stop();
-    }
+    this._viewModel?.toggleStartStop();
   }
 
   private _onSkipClicked(): void {

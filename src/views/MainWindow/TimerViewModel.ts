@@ -18,7 +18,6 @@ import type { TimerState } from '../../models/TimerState';
 import type { ISettingsStorage } from '../../services/ISettingsStorage';
 import type { ITimerService } from '../../services/ITimerService';
 
-/** @todo Refactor */
 class _TimerViewModel extends GObject.Object {
   private _model!: TimerModel;
   private _remainingSeconds!: number;
@@ -83,6 +82,14 @@ class _TimerViewModel extends GObject.Object {
 
   get startStopLabel(): string {
     return this._state === 'STOPPED' ? 'Start' : 'Stop';
+  }
+
+  toggleStartStop(): void {
+    if (this._state === 'STOPPED') {
+      this.start();
+    } else {
+      this.stop();
+    }
   }
 
   start(): void {
@@ -203,7 +210,6 @@ class _TimerViewModel extends GObject.Object {
   }
 }
 
-/** @todo Refactor */
 const TimerViewModelClass = GObject.registerClass(
   {
     GTypeName: 'PomodoroTimerViewModel',

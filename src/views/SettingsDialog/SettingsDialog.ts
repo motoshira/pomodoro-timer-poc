@@ -42,7 +42,6 @@ class _SettingsDialog extends Gtk.Dialog {
     this._viewModel?.load(settings);
   }
 
-  /** @todo Refactor */
   private _onSaveClicked(): void {
     if (!this._viewModel) return;
 
