@@ -15,7 +15,6 @@ class _SettingsDialog extends Gtk.Dialog {
   }
 
   bindViewModel(viewModel: SettingsViewModel): void {
-
     // Bind ViewModel properties to SpinButton values
     viewModel.bind_property(
       'work-duration',
