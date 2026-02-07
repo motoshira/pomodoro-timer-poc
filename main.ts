@@ -20,7 +20,7 @@ application.connect('activate', () => {
 
   // Create and show window
   const window = new MainWindow({ application });
-  window.bindViewModel(viewModel);
+  window.bindViewModel(viewModel, storage);
   window.present();
 });
 

@@ -8,3 +8,4 @@ schemas/gschemas.compiled
 *.swp
 .vscode/
 .idea/
+*.skill

@@ -21,11 +21,12 @@ export const calculateDurationSeconds = (settings: TimerSettings, mode: TimerMod
 
 // Helper for creating initial model
 export const createInitialModel = (settings: TimerSettings): TimerModel => {
-  const initialDuration = calculateDurationSeconds(settings, 'WORK');
+  const workMode = TimerModeSchema.parse('WORK');
+  const initialDuration = calculateDurationSeconds(settings, workMode);
   return TimerModelSchema.parse({
     remainingSeconds: initialDuration,
-    currentMode: 'WORK',
-    state: 'STOPPED',
+    currentMode: workMode,
+    state: TimerStateSchema.parse('STOPPED'),
   });
 };
 
@@ -98,12 +99,12 @@ export const transitionToNextMode = (
   timerModel: TimerModel,
   settings: TimerSettings,
 ): TimerModel => {
-  const nextMode = timerModel.currentMode === 'WORK' ? 'REST' : 'WORK';
+  const nextMode = TimerModeSchema.parse(timerModel.currentMode === 'WORK' ? 'REST' : 'WORK');
   const durationSeconds = calculateDurationSeconds(settings, nextMode);
   return {
     ...timerModel,
     currentMode: nextMode,
-    state: 'STOPPED',
+    state: TimerStateSchema.parse('STOPPED'),
     remainingSeconds: durationSeconds,
   } as TimerModel;
 };

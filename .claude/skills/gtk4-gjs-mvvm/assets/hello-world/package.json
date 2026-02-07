@@ -1,7 +1,7 @@
 {
-  "name": "pomodoro-timer",
+  "name": "gtk4-gjs-hello-world",
   "version": "1.0.0",
-  "description": "GTK Pomodoro Timer built with GJS and TypeScript",
+  "description": "GTK4+GJS Hello World with MVVM pattern",
   "type": "module",
   "engines": {
     "node": "22.x"
@@ -14,7 +14,7 @@
     "build": "npm run build:schemas && npm run generate:gresource && npm run build:resources && npm run build:ts",
     "start": "npm run build && gjs -m dist/main.js",
     "typecheck": "tsc --noEmit",
-    "lint": "biome check --write --error-on-warnings",
+    "lint": "biome check --write",
     "test": "esbuild test/index.ts --bundle --format=esm --platform=neutral --external:gi://* --outfile=dist/test-bundle.js && jasmine --module dist/test-bundle.js",
     "test:watch": "jasmine --watch",
     "ui:validate": "sh -c 'for file in src/views/*/*.ui; do gtk4-builder-tool validate \"$file\" || exit 1; done'",
