@@ -69,16 +69,8 @@
             <property name="halign">end</property>
             <property name="margin-top">12</property>
             <child>
-              <object class="GtkButton" id="cancelButton">
-                <property name="label">Cancel</property>
-              </object>
-            </child>
-            <child>
-              <object class="GtkButton" id="saveButton">
-                <property name="label">Save</property>
-                <style>
-                  <class name="suggested-action"/>
-                </style>
+              <object class="GtkButton" id="closeButton">
+                <property name="label">Close</property>
               </object>
             </child>
           </object>

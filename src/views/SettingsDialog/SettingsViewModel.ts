@@ -1,10 +1,17 @@
 import GObject from 'gi://GObject';
 import { type TimerSettings, TimerSettingsSchema } from '../../models/TimerSettings';
+import type { ISettingsStorage } from '../../services/ISettingsStorage';
 
 class _SettingsViewModel extends GObject.Object {
   private _workDuration = 0;
   private _restDuration = 0;
   private _originalSettings: TimerSettings | null = null;
+  private storage!: ISettingsStorage;
+
+  initialize(storage: ISettingsStorage, initialSettings: TimerSettings): void {
+    this.storage = storage;
+    this.load(initialSettings);
+  }
 
   get workDuration(): number {
     return this._workDuration;
@@ -14,7 +21,7 @@ class _SettingsViewModel extends GObject.Object {
     if (this._workDuration !== value) {
       this._workDuration = value;
       this.notify('work-duration');
-      this.notify('has-changes');
+      this._saveImmediately();
     }
   }
 
@@ -26,7 +33,7 @@ class _SettingsViewModel extends GObject.Object {
     if (this._restDuration !== value) {
       this._restDuration = value;
       this.notify('rest-duration');
-      this.notify('has-changes');
+      this._saveImmediately();
     }
   }
 
@@ -48,28 +55,28 @@ class _SettingsViewModel extends GObject.Object {
     this.notify('has-changes');
   }
 
-  save(): TimerSettings {
-    const settings = {
-      workDuration: this._workDuration,
-      restDuration: this._restDuration,
-    };
+  private _saveImmediately(): void {
+    try {
+      const settings = {
+        workDuration: this._workDuration,
+        restDuration: this._restDuration,
+      };
 
-    // Validate and return with brand
-    const validated = TimerSettingsSchema.parse(settings);
+      // Validate
+      const validated = TimerSettingsSchema.parse(settings);
 
-    this._originalSettings = { ...validated };
-    this.notify('has-changes');
+      // Persist to storage
+      this.storage.save(validated);
 
-    return validated;
-  }
-
-  cancel(): void {
-    if (this._originalSettings) {
-      this._workDuration = this._originalSettings.workDuration;
-      this._restDuration = this._originalSettings.restDuration;
-      this.notify('work-duration');
-      this.notify('rest-duration');
+      // Update original settings
+      this._originalSettings = { ...validated };
       this.notify('has-changes');
+
+      // Emit signal (no parameters - listeners will reload from storage)
+      this.emit('settings-changed');
+    } catch (error) {
+      // Log error but don't show dialog
+      console.error('Failed to save settings:', error);
     }
   }
 
@@ -85,6 +92,9 @@ class _SettingsViewModel extends GObject.Object {
 const SettingsViewModelClass = GObject.registerClass(
   {
     GTypeName: 'PomodoroSettingsViewModel',
+    Signals: {
+      'settings-changed': {},
+    },
     Properties: {
       'work-duration': GObject.ParamSpec.int(
         'work-duration',
@@ -120,8 +130,13 @@ const SettingsViewModelClass = GObject.registerClass(
 export type SettingsViewModel = InstanceType<typeof SettingsViewModelClass>;
 
 // Factory function for creating instances (for consistency)
-export function createSettingsViewModel(): SettingsViewModel {
-  return new SettingsViewModelClass();
+export function createSettingsViewModel(
+  storage: ISettingsStorage,
+  initialSettings: TimerSettings,
+): SettingsViewModel {
+  const vm = new SettingsViewModelClass();
+  vm.initialize(storage, initialSettings);
+  return vm;
 }
 
 // Export the class for direct instantiation if needed

@@ -1,5 +1,6 @@
 import GObject from 'gi://GObject';
 import Gtk from 'gi://Gtk';
+import type { ISettingsStorage } from '../../services/ISettingsStorage';
 import { SettingsDialog } from '../SettingsDialog/SettingsDialog';
 import { createSettingsViewModel } from '../SettingsDialog/SettingsViewModel';
 import type { TimerViewModel } from './TimerViewModel';
@@ -13,6 +14,7 @@ class _MainWindow extends Gtk.ApplicationWindow {
   private _resetButton!: Gtk.Button;
   private _settingsButton!: Gtk.Button;
   private _viewModel: TimerViewModel | null = null;
+  private storage: ISettingsStorage | null = null;
 
   _init(params?: Partial<Gtk.ApplicationWindow.ConstructorProps>) {
     super._init(params);
@@ -24,8 +26,9 @@ class _MainWindow extends Gtk.ApplicationWindow {
     this._settingsButton.connect('clicked', () => this._onSettingsClicked());
   }
 
-  bindViewModel(viewModel: TimerViewModel): void {
+  bindViewModel(viewModel: TimerViewModel, storage: ISettingsStorage): void {
     this._viewModel = viewModel;
+    this.storage = storage;
 
     // Bind properties from ViewModel to UI widgets
     viewModel.bind_property(
@@ -70,29 +73,26 @@ class _MainWindow extends Gtk.ApplicationWindow {
   }
 
   private _onSettingsClicked(): void {
-    if (!this._viewModel) return;
+    if (!this._viewModel || !this.storage) return;
 
-    // Create SettingsViewModel and Dialog
-    const settingsViewModel = createSettingsViewModel();
+    // Create SettingsViewModel with storage and current settings
+    const settingsViewModel = createSettingsViewModel(this.storage, this._viewModel.settings);
 
-    // Load current settings BEFORE creating dialog
-    settingsViewModel.load(this._viewModel.settings);
+    // Connect to settings-changed signal BEFORE creating dialog
+    const signalId = settingsViewModel.connect('settings-changed', () => {
+      // Reload settings from storage and update TimerViewModel
+      const updatedSettings = this.storage!.load();
+      this._viewModel?.updateSettings(updatedSettings);
+    });
 
+    // Create and show dialog
     const dialog = new SettingsDialog({ transient_for: this, modal: true });
-
-    // Bind ViewModel to Dialog AFTER loading settings
     dialog.bindViewModel(settingsViewModel);
 
-    // Show dialog and handle response
-    dialog.connect('response', (_dialog, response) => {
-      if (response === Gtk.ResponseType.OK) {
-        const savedSettings = dialog.getSavedSettings();
-        if (savedSettings) {
-          // Update TimerViewModel with new settings
-          this._viewModel?.updateSettings(savedSettings);
-        }
-      }
-      dialog.close();
+    // Handle dialog close to clean up signal connection
+    dialog.connect('close-request', () => {
+      settingsViewModel.disconnect(signalId);
+      return false; // Allow dialog to close
     });
 
     dialog.show();

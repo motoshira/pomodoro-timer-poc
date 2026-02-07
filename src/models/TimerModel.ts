@@ -99,9 +99,7 @@ export const transitionToNextMode = (
   timerModel: TimerModel,
   settings: TimerSettings,
 ): TimerModel => {
-  const nextMode = TimerModeSchema.parse(
-    timerModel.currentMode === 'WORK' ? 'REST' : 'WORK'
-  );
+  const nextMode = TimerModeSchema.parse(timerModel.currentMode === 'WORK' ? 'REST' : 'WORK');
   const durationSeconds = calculateDurationSeconds(settings, nextMode);
   return {
     ...timerModel,
